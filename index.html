@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>WHITE GHOST · World Builder</title>
+<title>YOUR NAME · World Builder</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet"/>
@@ -127,100 +127,110 @@ html,body{
 /* convergence lines canvas */
 #conv-canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;}
 
-/* ── CAMERA NAV BAR — horizontal bottom strip ── */
+/* ── FLOATING PILL NAVIGATION ── */
 #nav-bar{
   position:absolute;
-  bottom:0;left:0;right:0;
+  bottom:28px;
+  left:50%;
+  transform:translateX(-50%);
   z-index:100;
   pointer-events:all;
-  width:100%;
+  width:auto;
 }
 #nav-inner{
-  background:rgba(4,9,4,0.92);
-  border-top:0.5px solid var(--green-500);
-  display:flex;align-items:stretch;
-  height:38px;
-  backdrop-filter:blur(3px);
-}
-#nav-top{
-  display:flex;align-items:center;
-  padding:0 14px;
-  border-right:0.5px solid var(--green-700);
-  gap:8px;
-  flex-shrink:0;
-}
-#nav-logo{
-  font-family:'Cinzel',serif;
-  font-size:9px;letter-spacing:.16em;
-  color:var(--green-300);
+  display:flex;
+  align-items:center;
+  gap:4px;
+  background:rgba(5,13,5,0.88);
+  border:1px solid var(--green-500);
+  border-radius:50px;
+  padding:5px 8px;
+  backdrop-filter:blur(14px);
+  box-shadow:
+    0 0 0 1px rgba(74,138,78,0.08),
+    0 8px 32px rgba(0,0,0,0.7),
+    0 0 24px rgba(46,94,30,0.2),
+    inset 0 1px 0 rgba(74,138,78,0.12);
   white-space:nowrap;
 }
+
+/* hide old structural divs */
+#nav-top,#nav-bottom{ display:none; }
+#nav-links{ display:flex;flex-direction:row;gap:4px; }
+
+.nav-item{
+  display:flex;align-items:center;gap:7px;
+  padding:7px 16px;
+  border-radius:40px;
+  cursor:pointer;
+  transition:background 0.18s, box-shadow 0.18s;
+  position:relative;
+  overflow:hidden;
+}
+.nav-item::before{
+  content:'';
+  position:absolute;inset:0;border-radius:40px;
+  background:linear-gradient(135deg,rgba(74,138,78,0.15),transparent);
+  opacity:0;transition:opacity 0.18s;
+}
+.nav-item:hover::before{ opacity:1; }
+.nav-item:hover .nav-label{ color:var(--green-100); }
+
+.nav-item.active-nav{
+  background:rgba(196,146,26,0.14);
+  box-shadow:0 0 12px rgba(196,146,26,0.2), inset 0 0 16px rgba(196,146,26,0.06);
+}
+.nav-item.active-nav .nav-label{ color:var(--amber-bright); }
+.nav-item.active-nav .nav-marker{
+  background:var(--amber);
+  box-shadow:0 0 6px var(--amber);
+}
+.nav-marker{
+  width:5px;height:5px;border-radius:50%;
+  background:var(--green-600);
+  flex-shrink:0;
+  transition:background 0.2s, box-shadow 0.2s;
+}
+.nav-label{
+  font-size:10px;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--text-hud-bright);
+  transition:color 0.18s;
+  font-family:'Space Mono',monospace;
+}
+.nav-meta{ display:none; }
+
+/* nav divider — small vertical tick between pill items */
+.nav-divider{
+  width:1px;height:18px;
+  background:var(--green-700);
+  opacity:0.5;
+  flex-shrink:0;
+}
+
+/* readout badges shown on left/right inside pill */
 #nav-readouts{
   display:flex;gap:5px;align-items:center;
+  padding:0 8px 0 4px;
+  border-right:1px solid var(--green-700);
+  margin-right:2px;
 }
 .readout{
   font-size:7px;color:var(--text-hud);
   border:0.5px solid var(--green-700);
-  padding:1px 5px;border-radius:1px;
-  letter-spacing:.06em;
+  padding:2px 6px;border-radius:20px;
+  letter-spacing:.07em;
   white-space:nowrap;
+  background:rgba(46,94,30,0.12);
 }
-#nav-links{
-  display:flex;flex-direction:row;
-  flex:1;
+#nav-mode-pill{
+  font-size:7px;color:var(--text-hud-dim);
+  letter-spacing:.12em;white-space:nowrap;
+  padding:0 4px 0 8px;
+  border-left:1px solid var(--green-700);
+  margin-left:2px;
 }
-.nav-item{
-  display:flex;align-items:center;
-  padding:0 14px;
-  border-right:0.5px solid var(--green-800);
-  cursor:pointer;
-  transition:background 0.2s;
-  gap:6px;
-  white-space:nowrap;
-}
-.nav-item:hover{background:rgba(46,94,48,0.18);}
-.nav-item.active-nav{background:rgba(46,94,48,0.1);}
-.nav-item.active-nav .nav-label{color:var(--amber);}
-.nav-item.active-nav .nav-marker{background:var(--amber);opacity:1;}
-.nav-marker{
-  width:4px;height:4px;border-radius:50%;
-  background:var(--green-700);
-  flex-shrink:0;transition:background 0.2s;
-}
-.nav-label{
-  font-size:9px;letter-spacing:.12em;text-transform:uppercase;
-  color:var(--text-hud);transition:color 0.2s;
-}
-.nav-meta{font-size:7px;color:var(--text-hud-dim);letter-spacing:.05em;}
-#nav-bottom{
-  display:flex;align-items:center;
-  padding:0 14px;
-  border-left:0.5px solid var(--green-700);
-  gap:10px;
-  flex-shrink:0;
-}
-#nav-mode{font-size:7px;color:var(--text-hud-dim);letter-spacing:.12em;white-space:nowrap;}
-#nav-dots{display:flex;gap:4px;align-items:center;}
-.nav-dot{
-  width:5px;height:5px;border-radius:50%;
-  background:var(--green-800);
-  border:0.5px solid var(--green-600);
-  transition:background 0.3s;
-}
-.nav-dot.on{background:var(--green-300);}
-#nav-coords{font-size:7px;color:var(--text-hud-dim);white-space:nowrap;}
+.nav-home{} /* no extra style needed */
 
-.nav-divider{
-  width:0.5px;height:60%;
-  background:var(--green-700);
-  margin:0 2px;
-  opacity:0.6;
-  align-self:center;
-}
-.nav-home{background:rgba(46,94,30,0.06);}
-.nav-home:hover{background:rgba(46,94,30,0.2);}
-.nav-home.active-nav .nav-label{color:var(--amber);}
-.nav-home.active-nav .nav-marker{background:var(--amber);opacity:1;}
 #logo{
   position:absolute;top:16px;left:16px;
   z-index:100;
@@ -309,24 +319,69 @@ html,body{
   overflow:visible;
 }
 
-/* ── OTHER SECTIONS ───────────────────────────── */
+/* ── OTHER SECTIONS — refined scenes ─────────── */
 .inner-section{
   width:100%;height:100%;
   display:flex;align-items:center;justify-content:center;
-  flex-direction:column;gap:20px;
-  background:var(--green-900);
+  flex-direction:column;gap:24px;
+  position:relative;
+  overflow:hidden;
 }
+
+/* scene backgrounds */
+#sec-systems .inner-section{
+  background:radial-gradient(ellipse at 50% 110%, #0e2e10 0%, #060e06 55%, #030803 100%);
+}
+#sec-models .inner-section{
+  background:radial-gradient(ellipse at 30% 80%, #0a1e1a 0%, #050e0c 50%, #030807 100%);
+}
+#sec-art .inner-section{
+  background:radial-gradient(ellipse at 70% 80%, #1a1206 0%, #0e0c04 50%, #080604 100%);
+}
+#sec-about .inner-section{
+  background:radial-gradient(ellipse at 50% 90%, #0c1a1a 0%, #060c0e 55%, #040608 100%);
+}
+
+/* decorative grid / circuit lines in sections */
+.inner-section::before{
+  content:'';
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(46,94,30,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(46,94,30,0.04) 1px, transparent 1px);
+  background-size:60px 60px;
+  pointer-events:none;
+}
+/* unique accent line per section */
+.inner-section::after{
+  content:'';
+  position:absolute;
+  bottom:0;left:50%;transform:translateX(-50%);
+  width:340px;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(74,138,78,0.3),transparent);
+}
+#sec-art .inner-section::after{
+  background:linear-gradient(90deg,transparent,rgba(196,146,26,0.3),transparent);
+}
+#sec-about .inner-section::after{
+  background:linear-gradient(90deg,transparent,rgba(74,138,120,0.3),transparent);
+}
+
 .section-title{
   font-family:'Cinzel',serif;
   font-size:clamp(20px,3vw,36px);
   color:var(--amber);letter-spacing:.18em;
   opacity:0;
+  text-align:center;
+  position:relative;z-index:2;
 }
 .section-sub{
   font-family:'Crimson Pro',serif;
   font-style:italic;font-size:16px;
   color:var(--green-300);letter-spacing:.06em;
   opacity:0;
+  text-align:center;
+  position:relative;z-index:2;
 }
 .section.active .section-title{animation:fadeUp 0.8s ease 0.2s forwards;}
 .section.active .section-sub{animation:fadeUp 0.8s ease 0.4s forwards;}
@@ -336,8 +391,48 @@ html,body{
   background:rgba(4,9,4,0.8);border:0.5px solid var(--green-600);
   padding:4px 14px;border-radius:2px;
   opacity:0;
+  z-index:2;
+  white-space:nowrap;
 }
 .section.active .section-hud{animation:fadeIn 0.5s ease 0.1s forwards;}
+
+/* scene SVG canvas inside each section */
+.scene-canvas{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  pointer-events:none;
+  z-index:1;
+}
+
+/* section content card */
+.section-card{
+  position:relative;z-index:2;
+  display:flex;flex-direction:column;align-items:center;gap:18px;
+  padding:40px 60px;
+  background:rgba(5,10,5,0.55);
+  border:0.5px solid var(--green-600);
+  border-radius:4px;
+  backdrop-filter:blur(4px);
+  box-shadow:0 0 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(74,138,78,0.1);
+  opacity:0;
+}
+.section.active .section-card{animation:fadeUp 0.9s ease 0.3s forwards;}
+
+/* section tags row */
+.section-tags{
+  display:flex;gap:8px;
+  opacity:0;
+}
+.section.active .section-tags{animation:fadeUp 0.8s ease 0.55s forwards;}
+.s-tag{
+  font-size:7.5px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--text-hud-dim);
+  border:0.5px solid var(--green-700);
+  padding:3px 9px;border-radius:2px;
+  font-family:'Space Mono',monospace;
+  background:rgba(46,94,30,0.08);
+}
+
 
 /* ── CCTV TRANSITION ──────────────────────────── */
 #cctv-overlay{
@@ -362,17 +457,19 @@ html,body{
   white-space:nowrap;
 }
 
-/* rec indicator repositioned above nav bar */
+/* rec indicator — bottom left */
 #rec{
-  bottom:46px !important;
+  bottom:18px !important;
+  left:20px !important;
+  transform:none !important;
 }
-/* section label also above nav bar */
+/* section label — bottom right */
 #section-label{
-  bottom:46px !important;
+  bottom:18px !important;
 }
-/* enter hint above nav bar */
+/* enter hint above nav pill */
 #enter-hint{
-  bottom:56px !important;
+  bottom:88px !important;
 }
 
 /* ── ANIMATIONS ───────────────────────────────── */
@@ -763,52 +860,37 @@ html,body{
 
   <nav id="nav-bar">
     <div id="nav-inner">
-      <div id="nav-top">
-        <span id="nav-logo">PORTFOLIO</span>
-        <div id="nav-readouts">
-          <span class="readout" id="r-iso">ISO 800</span>
-          <span class="readout" id="r-f">F/2.8</span>
-        </div>
+      <div id="nav-readouts">
+        <span class="readout" id="r-iso">ISO 800</span>
+        <span class="readout" id="r-f">F/2.8</span>
       </div>
       <div id="nav-links">
         <div class="nav-item nav-home active-nav" data-target="home">
           <div class="nav-marker"></div>
           <span class="nav-label">Home</span>
-          <span class="nav-meta">⌂ HERO</span>
         </div>
         <div class="nav-divider"></div>
         <div class="nav-item" data-target="1">
           <div class="nav-marker"></div>
           <span class="nav-label">Systems</span>
-          <span class="nav-meta">ENV · C#</span>
         </div>
+        <div class="nav-divider"></div>
         <div class="nav-item" data-target="2">
           <div class="nav-marker"></div>
           <span class="nav-label">Models</span>
-          <span class="nav-meta">BLENDER · PBR</span>
         </div>
+        <div class="nav-divider"></div>
         <div class="nav-item" data-target="3">
           <div class="nav-marker"></div>
           <span class="nav-label">Art</span>
-          <span class="nav-meta">KRITA · PS</span>
         </div>
+        <div class="nav-divider"></div>
         <div class="nav-item" data-target="4">
           <div class="nav-marker"></div>
           <span class="nav-label">About</span>
-          <span class="nav-meta">CONTACT</span>
         </div>
       </div>
-      <div id="nav-bottom">
-        <span id="nav-mode">MODE: EXPLORE</span>
-        <div id="nav-dots">
-          <div class="nav-dot on" data-i="0"></div>
-          <div class="nav-dot" data-i="1"></div>
-          <div class="nav-dot" data-i="2"></div>
-          <div class="nav-dot" data-i="3"></div>
-          <div class="nav-dot" data-i="4"></div>
-        </div>
-        <span id="nav-coords">24°N · 88°E</span>
-      </div>
+      <span id="nav-mode-pill">MODE: EXPLORE</span>
     </div>
   </nav>
 
@@ -827,36 +909,212 @@ html,body{
     <div id="enter-hint-dot"></div>
   </div>
 
-  <!-- ── OTHER SECTIONS ── -->
+  <!-- ── SYSTEMS SECTION ── -->
   <div class="section right" id="sec-systems" data-section="1">
     <div class="inner-section">
       <div class="section-hud">SYSTEMS · ENV PROGRAMMING · C#</div>
-      <div class="section-title">Environmental Systems</div>
-      <div class="section-sub">The invisible architecture of living worlds</div>
+      <!-- background scene: circuit / forest grid -->
+      <svg class="scene-canvas" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+        <!-- ground plane -->
+        <rect x="0" y="620" width="1600" height="280" fill="#060e06"/>
+        <!-- horizon glow -->
+        <ellipse cx="800" cy="620" rx="700" ry="60" fill="#0e2e10" opacity="0.6"/>
+        <!-- tall trees silhouette -->
+        <g fill="#0c1e0c" opacity="0.85">
+          <rect x="60"   y="320" width="22" height="300"/><polygon points="71,200 20,360 122,360"/>
+          <rect x="160"  y="350" width="18" height="270"/><polygon points="169,230 125,370 213,370"/>
+          <rect x="290"  y="290" width="26" height="330"/><polygon points="303,160 248,320 358,320"/>
+          <rect x="430"  y="340" width="20" height="280"/><polygon points="440,218 400,355 480,355"/>
+          <rect x="560"  y="310" width="22" height="310"/><polygon points="571,190 527,335 615,335"/>
+          <rect x="700"  y="260" width="28" height="360"/><polygon points="714,130 655,290 773,290"/>
+          <rect x="860"  y="270" width="26" height="350"/><polygon points="873,140 818,285 928,285"/>
+          <rect x="1000" y="320" width="22" height="300"/><polygon points="1011,200 968,335 1054,335"/>
+          <rect x="1130" y="300" width="24" height="320"/><polygon points="1142,175 1094,315 1190,315"/>
+          <rect x="1260" y="350" width="20" height="270"/><polygon points="1270,228 1232,365 1308,365"/>
+          <rect x="1380" y="290" width="26" height="330"/><polygon points="1393,160 1345,305 1441,305"/>
+          <rect x="1510" y="340" width="18" height="280"/><polygon points="1519,220 1482,355 1556,355"/>
+        </g>
+        <!-- mist layer -->
+        <ellipse cx="800" cy="630" rx="900" ry="55" fill="#0a1e0a" opacity="0.45"/>
+        <ellipse cx="400" cy="650" rx="500" ry="40" fill="#081808" opacity="0.35"/>
+        <ellipse cx="1200" cy="645" rx="480" ry="38" fill="#081808" opacity="0.35"/>
+        <!-- circuit trace accents on ground -->
+        <g stroke="#1e3e1e" stroke-width="0.8" fill="none" opacity="0.5">
+          <path d="M0 700 L200 700 L200 720 L400 720 L400 700 L700 700"/>
+          <path d="M900 700 L1200 700 L1200 720 L1400 720 L1400 700 L1600 700"/>
+          <circle cx="200" cy="700" r="3" fill="#1e4214"/>
+          <circle cx="400" cy="720" r="3" fill="#1e4214"/>
+          <circle cx="1200" cy="700" r="3" fill="#1e4214"/>
+          <circle cx="1400" cy="720" r="3" fill="#1e4214"/>
+        </g>
+        <!-- data stream lines -->
+        <g stroke="#2d5e30" stroke-width="0.5" opacity="0.2">
+          <line x1="0" y1="480" x2="1600" y2="480"/>
+          <line x1="0" y1="540" x2="1600" y2="540"/>
+        </g>
+      </svg>
+      <div class="section-card">
+        <div class="section-title">Environmental Systems</div>
+        <div class="section-sub">The invisible architecture of living worlds</div>
+        <div class="section-tags">
+          <span class="s-tag">C#</span>
+          <span class="s-tag">Unity</span>
+          <span class="s-tag">Procedural</span>
+          <span class="s-tag">Simulation</span>
+        </div>
+      </div>
     </div>
   </div>
 
+  <!-- ── MODELS SECTION ── -->
   <div class="section right" id="sec-models" data-section="2">
     <div class="inner-section">
       <div class="section-hud">MODELS · BLENDER · PBR TEXTURES</div>
-      <div class="section-title">3D Models</div>
-      <div class="section-sub">Low poly to mid poly · stylized to realistic</div>
+      <svg class="scene-canvas" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+        <!-- floor plane -->
+        <rect x="0" y="600" width="1600" height="300" fill="#060c0a"/>
+        <!-- floor grid perspective -->
+        <g stroke="#122018" stroke-width="0.7" opacity="0.6">
+          <line x1="800" y1="600" x2="0"    y2="900"/><line x1="800" y1="600" x2="200"  y2="900"/>
+          <line x1="800" y1="600" x2="400"  y2="900"/><line x1="800" y1="600" x2="600"  y2="900"/>
+          <line x1="800" y1="600" x2="800"  y2="900"/><line x1="800" y1="600" x2="1000" y2="900"/>
+          <line x1="800" y1="600" x2="1200" y2="900"/><line x1="800" y1="600" x2="1400" y2="900"/>
+          <line x1="800" y1="600" x2="1600" y2="900"/>
+          <line x1="0" y1="680" x2="1600" y2="680"/><line x1="0" y1="740" x2="1600" y2="740"/>
+          <line x1="0" y1="800" x2="1600" y2="800"/><line x1="0" y1="860" x2="1600" y2="860"/>
+        </g>
+        <!-- low-poly rock shapes (stylized 3D models) -->
+        <g fill="#0e1e1a" stroke="#162820" stroke-width="1">
+          <polygon points="220,600 160,600 190,520"/>
+          <polygon points="190,520 160,600 140,560"/>
+          <polygon points="190,520 220,600 240,570"/>
+        </g>
+        <g fill="#0d1c18" stroke="#142618" stroke-width="1">
+          <polygon points="1380,600 1320,600 1350,510"/>
+          <polygon points="1350,510 1320,600 1300,555"/>
+          <polygon points="1350,510 1380,600 1400,558"/>
+        </g>
+        <!-- wireframe cube in center bg -->
+        <g stroke="#1e3e30" stroke-width="0.8" fill="none" opacity="0.35">
+          <rect x="720" y="360" width="160" height="160"/>
+          <polygon points="720,360 760,320 920,320 880,360"/>
+          <polygon points="880,360 920,320 920,480 880,520"/>
+          <line x1="720" y1="520" x2="760" y2="480"/>
+          <line x1="760" y1="480" x2="920" y2="480"/>
+          <line x1="760" y1="480" x2="760" y2="320"/>
+        </g>
+        <!-- ambient teal glow -->
+        <ellipse cx="800" cy="610" rx="600" ry="50" fill="#0a1e1a" opacity="0.5"/>
+      </svg>
+      <div class="section-card">
+        <div class="section-title">3D Models</div>
+        <div class="section-sub">Low poly to mid poly · stylized to realistic</div>
+        <div class="section-tags">
+          <span class="s-tag">Blender</span>
+          <span class="s-tag">PBR</span>
+          <span class="s-tag">Low-Poly</span>
+          <span class="s-tag">Rigging</span>
+        </div>
+      </div>
     </div>
   </div>
 
+  <!-- ── ART SECTION ── -->
   <div class="section right" id="sec-art" data-section="3">
     <div class="inner-section">
       <div class="section-hud">ART · KRITA · PHOTOSHOP · MAPS</div>
-      <div class="section-title">Concept Art</div>
-      <div class="section-sub">Scene design · world maps · visual language</div>
+      <svg class="scene-canvas" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+        <!-- warm amber horizon -->
+        <rect x="0" y="0" width="1600" height="900" fill="#080604"/>
+        <ellipse cx="800" cy="900" rx="900" ry="350" fill="#1a1004" opacity="0.8"/>
+        <ellipse cx="800" cy="900" rx="600" ry="220" fill="#201408" opacity="0.6"/>
+        <!-- mountain range silhouette -->
+        <g fill="#100c04" opacity="0.9">
+          <polygon points="0,900 0,600 120,420 240,580 380,350 500,500 640,300 760,480 800,380 840,480 960,310 1100,500 1240,360 1380,540 1520,380 1600,460 1600,900"/>
+        </g>
+        <g fill="#0c0a02" opacity="0.7">
+          <polygon points="0,900 0,700 100,560 200,660 350,490 480,600 600,440 720,560 800,460 880,560 1000,430 1150,600 1300,480 1450,620 1600,520 1600,900"/>
+        </g>
+        <!-- sketch-like construction lines -->
+        <g stroke="#2a1e06" stroke-width="0.6" opacity="0.3" fill="none">
+          <line x1="0" y1="300" x2="1600" y2="300"/>
+          <line x1="0" y1="500" x2="1600" y2="500"/>
+          <line x1="400" y1="0" x2="400" y2="900"/>
+          <line x1="800" y1="0" x2="800" y2="900"/>
+          <line x1="1200" y1="0" x2="1200" y2="900"/>
+        </g>
+        <!-- golden "sun" disc -->
+        <circle cx="800" cy="500" r="80" fill="none" stroke="#3a2a06" stroke-width="0.8" opacity="0.4"/>
+        <circle cx="800" cy="500" r="45" fill="#1a1004" stroke="#2a1e06" stroke-width="0.6" opacity="0.5"/>
+        <!-- compass rose accent -->
+        <g stroke="#3a2808" stroke-width="0.8" opacity="0.25" transform="translate(200,200)">
+          <line x1="0" y1="-30" x2="0" y2="30"/>
+          <line x1="-30" y1="0" x2="30" y2="0"/>
+          <line x1="-21" y1="-21" x2="21" y2="21"/>
+          <line x1="21" y1="-21" x2="-21" y2="21"/>
+          <circle cx="0" cy="0" r="30" fill="none"/>
+        </g>
+      </svg>
+      <div class="section-card">
+        <div class="section-title">Concept Art</div>
+        <div class="section-sub">Scene design · world maps · visual language</div>
+        <div class="section-tags">
+          <span class="s-tag">Krita</span>
+          <span class="s-tag">Photoshop</span>
+          <span class="s-tag">World Maps</span>
+          <span class="s-tag">Concepts</span>
+        </div>
+      </div>
     </div>
   </div>
 
+  <!-- ── ABOUT SECTION ── -->
   <div class="section right" id="sec-about" data-section="4">
     <div class="inner-section">
       <div class="section-hud">ABOUT · CONTACT · FREELANCE</div>
-      <div class="section-title">About</div>
-      <div class="section-sub">Aspiring game developer · env systems specialist</div>
+      <svg class="scene-canvas" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+        <!-- deep teal darkness -->
+        <rect x="0" y="0" width="1600" height="900" fill="#040608"/>
+        <!-- scanning circle rings -->
+        <g stroke="#0e2028" stroke-width="0.8" fill="none" opacity="0.5">
+          <circle cx="800" cy="500" r="120"/><circle cx="800" cy="500" r="200"/>
+          <circle cx="800" cy="500" r="300"/><circle cx="800" cy="500" r="420"/>
+          <circle cx="800" cy="500" r="560"/>
+        </g>
+        <!-- radar sweep line (decorative) -->
+        <line x1="800" y1="500" x2="1200" y2="200" stroke="#163030" stroke-width="1" opacity="0.3"/>
+        <!-- node network -->
+        <g stroke="#0e2824" stroke-width="0.6" opacity="0.35">
+          <line x1="200" y1="200" x2="500" y2="350"/>
+          <line x1="500" y1="350" x2="700" y2="280"/>
+          <line x1="700" y1="280" x2="800" y2="500"/>
+          <line x1="800" y1="500" x2="1100" y2="400"/>
+          <line x1="1100" y1="400" x2="1400" y2="300"/>
+          <line x1="300" y1="700" x2="600" y2="600"/>
+          <line x1="600" y1="600" x2="800" y2="500"/>
+          <line x1="800" y1="500" x2="1000" y2="650"/>
+          <line x1="1000" y1="650" x2="1300" y2="700"/>
+        </g>
+        <!-- network nodes -->
+        <g fill="#163228" opacity="0.5">
+          <circle cx="200" cy="200" r="4"/><circle cx="500" cy="350" r="3"/>
+          <circle cx="700" cy="280" r="3"/><circle cx="800" cy="500" r="6"/>
+          <circle cx="1100" cy="400" r="3"/><circle cx="1400" cy="300" r="4"/>
+          <circle cx="300" cy="700" r="3"/><circle cx="600" cy="600" r="3"/>
+          <circle cx="1000" cy="650" r="3"/><circle cx="1300" cy="700" r="4"/>
+        </g>
+        <!-- horizon glow -->
+        <ellipse cx="800" cy="900" rx="700" ry="120" fill="#0a1e20" opacity="0.4"/>
+      </svg>
+      <div class="section-card">
+        <div class="section-title">About</div>
+        <div class="section-sub">Aspiring game developer · env systems specialist</div>
+        <div class="section-tags">
+          <span class="s-tag">Freelance</span>
+          <span class="s-tag">Open to work</span>
+          <span class="s-tag">Contact</span>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -1224,7 +1482,7 @@ function updateNavUI(){
   const d = NAV_LINK_IDS[currentSection];
   document.getElementById('r-iso').textContent = d.iso;
   document.getElementById('r-f').textContent   = d.f;
-  document.getElementById('nav-mode').textContent = 'MODE: '+d.mode;
+  document.getElementById('nav-mode-pill').textContent = 'MODE: '+d.mode;
   document.querySelector('#section-label .sl-main').textContent = d.lbl;
   document.querySelector('#section-label .sl-sub').textContent  = d.sub;
 
@@ -1234,11 +1492,6 @@ function updateNavUI(){
     const isActive = (t === 'home' && currentSection === 0) ||
                      (t !== 'home' && parseInt(t) === currentSection);
     el.classList.toggle('active-nav', isActive);
-  });
-
-  // dots
-  document.querySelectorAll('.nav-dot').forEach((el,i)=>{
-    el.classList.toggle('on', i===currentSection);
   });
 }
 
