@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Ashor Dev · Environmental Systems</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="shared.css"/>
+<style>
+.inner-section{
+  background:radial-gradient(ellipse at 50% 110%, #0e2e10 0%, #060e06 55%, #030803 100%);
+}
+/* tree sway */
+@keyframes treeSway{
+  0%,100%{transform:rotate(-0.5deg);}
+  50%{transform:rotate(0.5deg);}
+}
+.tree-group{transform-origin:bottom center;animation:treeSway 6s ease-in-out infinite;}
+.tree-group:nth-child(2){animation-delay:-2s;animation-duration:7s;}
+.tree-group:nth-child(3){animation-delay:-4s;animation-duration:5.5s;}
+/* data stream pulse */
+@keyframes tracePulse{0%,100%{opacity:0.15;}50%{opacity:0.55;}}
+.trace-line{animation:tracePulse 3s ease-in-out infinite;}
+.trace-line:nth-child(2){animation-delay:-1s;}
+.trace-line:nth-child(3){animation-delay:-2s;}
+/* mist drift */
+@keyframes mistDrift{0%{transform:translateX(-30px);opacity:0.3;}50%{opacity:0.55;}100%{transform:translateX(30px);opacity:0.3;}}
+.mist{animation:mistDrift 8s ease-in-out infinite;}
+.mist:nth-child(2){animation-delay:-3s;animation-duration:11s;}
+</style>
+</head>
+<body>
+<div id="site">
+  <div id="cctv-overlay"><canvas id="cctv-canvas"></canvas></div>
+  <div id="cctv-stamp"></div>
+  <div class="bracket tl"></div><div class="bracket tr"></div>
+  <div class="bracket bl"></div><div class="bracket br"></div>
+  <a id="logo" href="index.html"><span>AD · ENV</span></a>
+  <nav id="nav-bar"></nav>
+  <div id="rec"><div id="rec-dot"></div><span id="rec-text">REC · <span id="rec-timer">00:00</span></span></div>
+  <div id="section-label"><div class="sl-main">Systems · Forest</div><div class="sl-sub">F/4.0 · MF · ISO 3200</div></div>
+  <div class="section-hud">SYSTEMS · ENV PROGRAMMING · C#</div>
+
+  <div class="inner-section">
+    <!-- background scene -->
+    <svg class="scene-canvas" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <!-- ground plane -->
+      <rect x="0" y="620" width="1600" height="280" fill="#060e06"/>
+      <!-- horizon glow -->
+      <ellipse cx="800" cy="618" rx="720" ry="70" fill="#0e2e10" opacity="0.55"/>
+      <!-- trees -->
+      <g class="tree-group">
+        <rect x="60" y="320" width="22" height="300" fill="#0c1e0c"/>
+        <polygon points="71,190 16,355 126,355" fill="#0e2210"/>
+        <polygon points="71,255 26,370 116,370" fill="#0c1e0e"/>
+      </g>
+      <g class="tree-group">
+        <rect x="290" y="285" width="26" height="335" fill="#0b1c0c"/>
+        <polygon points="303,148 242,315 364,315" fill="#0d2010"/>
+        <polygon points="303,220 252,330 354,330" fill="#0b1e0e"/>
+      </g>
+      <g class="tree-group">
+        <rect x="700" y="255" width="28" height="365" fill="#0c1e0c"/>
+        <polygon points="714,118 648,284 780,284" fill="#0e2212"/>
+        <polygon points="714,195 658,295 770,295" fill="#0c2010"/>
+      </g>
+      <g class="tree-group">
+        <rect x="1000" y="315" width="22" height="305" fill="#0b1c0c"/>
+        <polygon points="1011,190 960,330 1062,330" fill="#0d2010"/>
+        <polygon points="1011,260 968,345 1054,345" fill="#0b1e0e"/>
+      </g>
+      <g class="tree-group">
+        <rect x="1380" y="285" width="26" height="335" fill="#0c1e0c"/>
+        <polygon points="1393,155 1338,305 1448,305" fill="#0e2210"/>
+        <polygon points="1393,230 1345,318 1441,318" fill="#0c1e0e"/>
+      </g>
+      <!-- mid trees -->
+      <rect x="160" y="350" width="18" height="270" fill="#0a1a0a"/>
+      <polygon points="169,225 128,368 210,368" fill="#0c1e0e"/>
+      <rect x="560" y="308" width="22" height="312" fill="#0b1c0b"/>
+      <polygon points="571,185 525,330 617,330" fill="#0d200e"/>
+      <rect x="860" y="270" width="26" height="350" fill="#0b1c0c"/>
+      <polygon points="873,138 815,282 931,282" fill="#0d2210"/>
+      <rect x="1130" y="298" width="24" height="322" fill="#0b1c0b"/>
+      <polygon points="1142,172 1092,312 1192,312" fill="#0c2010"/>
+      <!-- mist layers -->
+      <ellipse class="mist" cx="400" cy="635" rx="520" ry="48" fill="#0a1e0a" opacity="0.4"/>
+      <ellipse class="mist" cx="1100" cy="645" rx="480" ry="40" fill="#081808" opacity="0.35"/>
+      <ellipse cx="800" cy="628" rx="900" ry="55" fill="#091808" opacity="0.4"/>
+      <!-- circuit traces on ground -->
+      <g>
+        <path class="trace-line" d="M0 700 L200 700 L200 720 L440 720 L440 700 L700 700" stroke="#1e4214" stroke-width="0.8" fill="none"/>
+        <path class="trace-line" d="M900 700 L1180 700 L1180 718 L1420 718 L1420 700 L1600 700" stroke="#1e4214" stroke-width="0.8" fill="none"/>
+        <path class="trace-line" d="M300 740 L600 740 L600 760 L900 760 L900 740 L1200 740" stroke="#163410" stroke-width="0.6" fill="none"/>
+        <circle cx="200" cy="700" r="3" fill="#1e4214" opacity="0.6"/>
+        <circle cx="440" cy="720" r="3" fill="#1e4214" opacity="0.6"/>
+        <circle cx="1180" cy="700" r="3" fill="#1e4214" opacity="0.6"/>
+        <circle cx="1420" cy="718" r="3" fill="#1e4214" opacity="0.6"/>
+        <circle cx="600" cy="740" r="2.5" fill="#163410" opacity="0.5"/>
+        <circle cx="900" cy="760" r="2.5" fill="#163410" opacity="0.5"/>
+      </g>
+      <!-- data scan lines -->
+      <line x1="0" y1="480" x2="1600" y2="480" stroke="#1e3a18" stroke-width="0.4" opacity="0.2"/>
+      <line x1="0" y1="540" x2="1600" y2="540" stroke="#1e3a18" stroke-width="0.4" opacity="0.2"/>
+    </svg>
+
+    <div class="section-card">
+      <div class="section-title">Environmental Systems</div>
+      <div class="section-sub">The invisible architecture of living worlds</div>
+      <div class="section-tags">
+        <span class="s-tag">C#</span>
+        <span class="s-tag">Unity</span>
+        <span class="s-tag">Procedural</span>
+        <span class="s-tag">Simulation</span>
+        <span class="s-tag">Pathfinding</span>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="nav.js"></script>
+</body>
+</html>

@@ -3,75 +3,20 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>YOUR NAME · World Builder</title>
+<title>Ashor Dev · World Builder</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="shared.css"/>
 <style>
-/* ── RESET & BASE ─────────────────────────────── */
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-:root{
-  --green-900:#050d05;
-  --green-800:#0a1a0a;
-  --green-700:#0f2410;
-  --green-600:#163018;
-  --green-500:#1e3f20;
-  --green-400:#2d5e30;
-  --green-300:#4a8a4e;
-  --green-200:#7ab87e;
-  --green-100:#b8d8ba;
-  --amber:#c4921a;
-  --amber-bright:#e8b84a;
-  --amber-dim:#7a5510;
-  --text-hud:#3a6a3a;
-  --text-hud-bright:#6aaa6a;
-  --text-hud-dim:#1e3e1e;
-}
-html,body{
-  width:100%;height:100%;
-  overflow:hidden;
-  background:var(--green-900);
-  color:var(--green-200);
-  font-family:'Space Mono',monospace;
-  cursor:crosshair;
-}
+/* ── HERO-SPECIFIC ─────────────────────────────── */
+#hero{background:var(--green-900);position:absolute;inset:0;}
 
-/* ── SITE WRAPPER ─────────────────────────────── */
-#site{
-  width:100vw;height:100vh;
-  position:relative;
-  overflow:hidden;
-}
-
-/* ── SECTIONS ─────────────────────────────────── */
-.section{
-  position:absolute;
-  top:0;left:0;
-  width:100%;height:100%;
-  will-change:opacity,filter;
-  /* no slide — CCTV hard cut handled in JS */
-}
-.section.active{
-  opacity:1;
-  pointer-events:all;
-}
-.section.left,
-.section.right{
-  opacity:0;
-  pointer-events:none;
-}
-
-/* ── HERO SCENE ───────────────────────────────── */
-#hero{background:var(--green-900);}
-
-/* zoom: scale the parallax container slightly in */
 #scene-zoom{
   position:absolute;inset:0;
   transform:scale(1.12);
   transform-origin:center 60%;
 }
-
-/* parallax layers */
 .p-layer{
   position:absolute;
   top:0;left:-8%;
@@ -86,218 +31,27 @@ html,body{
 #layer-billboard{z-index:4;}
 #layer-rooftop {z-index:5;}
 #layer-fg      {z-index:6;}
-
-/* sky canvas */
 #sky-canvas{position:absolute;inset:0;width:100%;height:100%;}
 
-/* ── CAMERA HUD OVERLAY ───────────────────────── */
-#hud{
-  position:absolute;inset:0;
-  z-index:20;
-  pointer-events:none;
-}
+#hud{position:absolute;inset:0;z-index:20;pointer-events:none;}
 #hud canvas{position:absolute;inset:0;width:100%;height:100%;}
-
-/* corner brackets */
-.bracket{
-  position:absolute;
-  width:32px;height:32px;
-  border-color:var(--green-400);
-  border-style:solid;
-  opacity:0.7;
-}
-.bracket.tl{top:16px;left:16px;border-width:1.5px 0 0 1.5px;}
-.bracket.tr{top:16px;right:16px;border-width:1.5px 1.5px 0 0;}
-.bracket.bl{bottom:16px;left:16px;border-width:0 0 1.5px 1.5px;}
-.bracket.br{bottom:16px;right:16px;border-width:0 1.5px 1.5px 0;}
-
-/* RoT grid lines */
-.rot-line{
-  position:absolute;
-  background:rgba(46,94,48,0.12);
-  pointer-events:none;
-}
+.rot-line{position:absolute;background:rgba(46,94,48,0.12);pointer-events:none;}
 .rot-h{left:0;right:0;height:1px;}
 .rot-v{top:0;bottom:0;width:1px;}
-#rl1{top:33.33%;}
-#rl2{top:66.66%;}
-#rv1{left:33.33%;}
-#rv2{left:66.66%;}
-
-/* convergence lines canvas */
+#rl1{top:33.33%;}#rl2{top:66.66%;}#rv1{left:33.33%;}#rv2{left:66.66%;}
 #conv-canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;}
 
-/* ── FLOATING PILL NAVIGATION ── */
-#nav-bar{
-  position:absolute;
-  bottom:28px;
-  left:50%;
-  transform:translateX(-50%);
-  z-index:100;
-  pointer-events:all;
-  width:auto;
-}
-#nav-inner{
-  display:flex;
-  align-items:center;
-  gap:4px;
-  background:rgba(5,13,5,0.88);
-  border:1px solid var(--green-500);
-  border-radius:50px;
-  padding:5px 8px;
-  backdrop-filter:blur(14px);
-  box-shadow:
-    0 0 0 1px rgba(74,138,78,0.08),
-    0 8px 32px rgba(0,0,0,0.7),
-    0 0 24px rgba(46,94,30,0.2),
-    inset 0 1px 0 rgba(74,138,78,0.12);
-  white-space:nowrap;
-}
+#particle-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:15;pointer-events:none;}
 
-/* hide old structural divs */
-#nav-top,#nav-bottom{ display:none; }
-#nav-links{ display:flex;flex-direction:row;gap:4px; }
+.layer-svg{position:absolute;bottom:0;left:0;width:100%;height:100%;overflow:visible;}
 
-.nav-item{
-  display:flex;align-items:center;gap:7px;
-  padding:7px 16px;
-  border-radius:40px;
-  cursor:pointer;
-  transition:background 0.18s, box-shadow 0.18s;
-  position:relative;
-  overflow:hidden;
-}
-.nav-item::before{
-  content:'';
-  position:absolute;inset:0;border-radius:40px;
-  background:linear-gradient(135deg,rgba(74,138,78,0.15),transparent);
-  opacity:0;transition:opacity 0.18s;
-}
-.nav-item:hover::before{ opacity:1; }
-.nav-item:hover .nav-label{ color:var(--green-100); }
-
-.nav-item.active-nav{
-  background:rgba(196,146,26,0.14);
-  box-shadow:0 0 12px rgba(196,146,26,0.2), inset 0 0 16px rgba(196,146,26,0.06);
-}
-.nav-item.active-nav .nav-label{ color:var(--amber-bright); }
-.nav-item.active-nav .nav-marker{
-  background:var(--amber);
-  box-shadow:0 0 6px var(--amber);
-}
-.nav-marker{
-  width:5px;height:5px;border-radius:50%;
-  background:var(--green-600);
-  flex-shrink:0;
-  transition:background 0.2s, box-shadow 0.2s;
-}
-.nav-label{
-  font-size:10px;letter-spacing:.13em;text-transform:uppercase;
-  color:var(--text-hud-bright);
-  transition:color 0.18s;
-  font-family:'Space Mono',monospace;
-}
-.nav-meta{ display:none; }
-
-/* nav divider — small vertical tick between pill items */
-.nav-divider{
-  width:1px;height:18px;
-  background:var(--green-700);
-  opacity:0.5;
-  flex-shrink:0;
-}
-
-/* readout badges shown on left/right inside pill */
-#nav-readouts{
-  display:flex;gap:5px;align-items:center;
-  padding:0 8px 0 4px;
-  border-right:1px solid var(--green-700);
-  margin-right:2px;
-}
-.readout{
-  font-size:7px;color:var(--text-hud);
-  border:0.5px solid var(--green-700);
-  padding:2px 6px;border-radius:20px;
-  letter-spacing:.07em;
-  white-space:nowrap;
-  background:rgba(46,94,30,0.12);
-}
-#nav-mode-pill{
-  font-size:7px;color:var(--text-hud-dim);
-  letter-spacing:.12em;white-space:nowrap;
-  padding:0 4px 0 8px;
-  border-left:1px solid var(--green-700);
-  margin-left:2px;
-}
-.nav-home{} /* no extra style needed */
-
-#logo{
-  position:absolute;top:16px;left:16px;
-  z-index:100;
-  background:rgba(4,9,4,0.88);
-  border:0.5px solid var(--green-600);
-  border-radius:2px;
-  padding:4px 10px;
-  cursor:pointer;
-  pointer-events:all;
-  transition:border-color 0.2s;
-}
-#logo:hover{border-color:var(--amber);}
-#logo span{
-  font-family:'Cinzel',serif;
-  font-size:10px;letter-spacing:.18em;
-  color:var(--green-300);
-  transition:color 0.2s;
-}
-#logo:hover span{color:var(--amber);}
-
-/* ── REC INDICATOR ────────────────────────────── */
-#rec{
-  position:absolute;bottom:16px;left:50%;
-  transform:translateX(-50%);
-  z-index:100;pointer-events:none;
-  display:flex;align-items:center;gap:6px;
-  opacity:0;animation:fadeIn 0.5s ease 2.4s forwards;
-}
-#rec-dot{
-  width:6px;height:6px;border-radius:50%;
-  background:#3a7a3a;
-  animation:recBlink 2s ease-in-out infinite;
-}
-#rec-text{font-size:8px;color:var(--text-hud);letter-spacing:.12em;}
-@keyframes recBlink{0%,100%{opacity:1}50%{opacity:.3}}
-
-/* ── SECTION LABEL ────────────────────────────── */
-#section-label{
-  position:absolute;bottom:16px;right:16px;
-  z-index:100;pointer-events:none;
-  text-align:right;
-  opacity:0;animation:fadeIn 0.5s ease 2.6s forwards;
-}
-#section-label .sl-main{
-  font-size:8px;letter-spacing:.14em;
-  color:var(--text-hud);text-transform:uppercase;
-}
-#section-label .sl-sub{
-  font-size:7px;color:var(--text-hud-dim);
-  letter-spacing:.08em;margin-top:1px;
-}
-
-/* ── PARTICLE CANVAS ──────────────────────────── */
-#particle-canvas{
-  position:absolute;inset:0;
-  width:100%;height:100%;
-  z-index:15;pointer-events:none;
-}
-
-/* ── ENTER HINT ───────────────────────────────── */
 #enter-hint{
-  position:absolute;bottom:40px;left:50%;
+  position:fixed;bottom:88px;left:50%;
   transform:translateX(-50%);
   z-index:100;pointer-events:none;
   display:flex;flex-direction:column;align-items:center;
   gap:5px;
-  opacity:0;animation:fadeIn 0.8s ease 3s forwards;
+  opacity:0;animation:fadeIn 0.8s ease 2.4s forwards;
 }
 #enter-hint span{
   font-size:8px;letter-spacing:.18em;
@@ -310,1220 +64,374 @@ html,body{
   background:var(--green-500);
   animation:pulse 2.5s ease-in-out infinite;
 }
-@keyframes pulse{0%,100%{transform:scale(1);opacity:.4}50%{transform:scale(1.6);opacity:1}}
-
-/* ── SCENE SVG LAYERS ─────────────────────────── */
-.layer-svg{
-  position:absolute;bottom:0;left:0;
-  width:100%;height:100%;
-  overflow:visible;
-}
-
-/* ── OTHER SECTIONS — refined scenes ─────────── */
-.inner-section{
-  width:100%;height:100%;
-  display:flex;align-items:center;justify-content:center;
-  flex-direction:column;gap:24px;
-  position:relative;
-  overflow:hidden;
-}
-
-/* scene backgrounds */
-#sec-systems .inner-section{
-  background:radial-gradient(ellipse at 50% 110%, #0e2e10 0%, #060e06 55%, #030803 100%);
-}
-#sec-models .inner-section{
-  background:radial-gradient(ellipse at 30% 80%, #0a1e1a 0%, #050e0c 50%, #030807 100%);
-}
-#sec-art .inner-section{
-  background:radial-gradient(ellipse at 70% 80%, #1a1206 0%, #0e0c04 50%, #080604 100%);
-}
-#sec-about .inner-section{
-  background:radial-gradient(ellipse at 50% 90%, #0c1a1a 0%, #060c0e 55%, #040608 100%);
-}
-
-/* decorative grid / circuit lines in sections */
-.inner-section::before{
-  content:'';
-  position:absolute;inset:0;
-  background-image:
-    linear-gradient(rgba(46,94,30,0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(46,94,30,0.04) 1px, transparent 1px);
-  background-size:60px 60px;
-  pointer-events:none;
-}
-/* unique accent line per section */
-.inner-section::after{
-  content:'';
-  position:absolute;
-  bottom:0;left:50%;transform:translateX(-50%);
-  width:340px;height:1px;
-  background:linear-gradient(90deg,transparent,rgba(74,138,78,0.3),transparent);
-}
-#sec-art .inner-section::after{
-  background:linear-gradient(90deg,transparent,rgba(196,146,26,0.3),transparent);
-}
-#sec-about .inner-section::after{
-  background:linear-gradient(90deg,transparent,rgba(74,138,120,0.3),transparent);
-}
-
-.section-title{
-  font-family:'Cinzel',serif;
-  font-size:clamp(20px,3vw,36px);
-  color:var(--amber);letter-spacing:.18em;
-  opacity:0;
-  text-align:center;
-  position:relative;z-index:2;
-}
-.section-sub{
-  font-family:'Crimson Pro',serif;
-  font-style:italic;font-size:16px;
-  color:var(--green-300);letter-spacing:.06em;
-  opacity:0;
-  text-align:center;
-  position:relative;z-index:2;
-}
-.section.active .section-title{animation:fadeUp 0.8s ease 0.2s forwards;}
-.section.active .section-sub{animation:fadeUp 0.8s ease 0.4s forwards;}
-.section-hud{
-  position:absolute;top:16px;left:50%;transform:translateX(-50%);
-  font-size:9px;color:var(--text-hud);letter-spacing:.14em;
-  background:rgba(4,9,4,0.8);border:0.5px solid var(--green-600);
-  padding:4px 14px;border-radius:2px;
-  opacity:0;
-  z-index:2;
-  white-space:nowrap;
-}
-.section.active .section-hud{animation:fadeIn 0.5s ease 0.1s forwards;}
-
-/* scene SVG canvas inside each section */
-.scene-canvas{
-  position:absolute;inset:0;
-  width:100%;height:100%;
-  pointer-events:none;
-  z-index:1;
-}
-
-/* section content card */
-.section-card{
-  position:relative;z-index:2;
-  display:flex;flex-direction:column;align-items:center;gap:18px;
-  padding:40px 60px;
-  background:rgba(5,10,5,0.55);
-  border:0.5px solid var(--green-600);
-  border-radius:4px;
-  backdrop-filter:blur(4px);
-  box-shadow:0 0 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(74,138,78,0.1);
-  opacity:0;
-}
-.section.active .section-card{animation:fadeUp 0.9s ease 0.3s forwards;}
-
-/* section tags row */
-.section-tags{
-  display:flex;gap:8px;
-  opacity:0;
-}
-.section.active .section-tags{animation:fadeUp 0.8s ease 0.55s forwards;}
-.s-tag{
-  font-size:7.5px;letter-spacing:.12em;text-transform:uppercase;
-  color:var(--text-hud-dim);
-  border:0.5px solid var(--green-700);
-  padding:3px 9px;border-radius:2px;
-  font-family:'Space Mono',monospace;
-  background:rgba(46,94,30,0.08);
-}
-
-
-/* ── CCTV TRANSITION ──────────────────────────── */
-#cctv-overlay{
-  position:absolute;inset:0;z-index:200;
-  pointer-events:none;
-  opacity:0;
-}
-#cctv-canvas{width:100%;height:100%;}
-
-/* channel id stamp — shown during cut */
-#cctv-stamp{
-  position:absolute;
-  top:50%;left:50%;
-  transform:translate(-50%,-50%);
-  font-family:'Space Mono',monospace;
-  font-size:11px;letter-spacing:.22em;
-  color:rgba(180,220,160,0.7);
-  text-transform:uppercase;
-  opacity:0;
-  pointer-events:none;
-  z-index:201;
-  white-space:nowrap;
-}
-
-/* rec indicator — bottom left */
-#rec{
-  bottom:18px !important;
-  left:20px !important;
-  transform:none !important;
-}
-/* section label — bottom right */
-#section-label{
-  bottom:18px !important;
-}
-/* enter hint above nav pill */
-#enter-hint{
-  bottom:88px !important;
-}
-
-/* ── ANIMATIONS ───────────────────────────────── */
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-
-/* ── BILLBOARD GLOW ───────────────────────────── */
-@keyframes billboardGlow{
-  0%,100%{opacity:0.85}
-  50%{opacity:1}
-}
-@keyframes billboardGlitch{
-  0%{clip-path:inset(0 0 100% 0);opacity:0}
-  5%{clip-path:inset(0 0 60% 0);opacity:1}
-  10%{clip-path:inset(20% 0 40% 0);opacity:0.8}
-  14%{clip-path:inset(0 0 0 0);opacity:1}
-  15%{clip-path:inset(30% 0 30% 0);opacity:0.6}
-  17%{clip-path:inset(0 0 0 0);opacity:1}
-  18%{clip-path:inset(10% 5% 10% 5%);opacity:0.9}
-  20%,100%{clip-path:inset(0 0 0 0);opacity:1}
-}
 </style>
 </head>
 <body>
-
 <div id="site">
+
+  <!-- CCTV overlay (managed by nav.js) -->
   <div id="cctv-overlay"><canvas id="cctv-canvas"></canvas></div>
   <div id="cctv-stamp"></div>
 
-  <!-- ── HERO SECTION ── -->
-  <div class="section active" id="hero" data-section="0">
+  <!-- corner brackets -->
+  <div class="bracket tl"></div><div class="bracket tr"></div>
+  <div class="bracket bl"></div><div class="bracket br"></div>
 
-    <!-- sky -->
-    <div id="scene-zoom">
-    <div class="p-layer" id="layer-sky" data-depth="0">
-      <canvas id="sky-canvas"></canvas>
-    </div>
+  <!-- logo -->
+  <a id="logo" href="index.html"><span>AD · ENV</span></a>
 
-    <!-- distant city silhouette -->
-    <div class="p-layer" id="layer-city" data-depth="0.02">
-      <svg class="layer-svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax meet" xmlns="http://www.w3.org/2000/svg">
-        <g fill="#0c1a0c" opacity="0.7">
-          <rect x="0"    y="500" width="60"  height="400"/>
-          <rect x="40"   y="440" width="40"  height="460"/>
-          <rect x="100"  y="520" width="80"  height="380"/>
-          <rect x="160"  y="460" width="50"  height="440"/>
-          <rect x="190"  y="400" width="30"  height="500"/>
-          <rect x="240"  y="480" width="70"  height="420"/>
-          <rect x="290"  y="430" width="45"  height="470"/>
-          <rect x="320"  y="380" width="35"  height="520"/>
-          <rect x="380"  y="500" width="90"  height="400"/>
-          <rect x="450"  y="440" width="55"  height="460"/>
-          <rect x="490"  y="410" width="30"  height="490"/>
-          <rect x="540"  y="470" width="75"  height="430"/>
-          <rect x="600"  y="420" width="50"  height="480"/>
-          <rect x="630"  y="380" width="40"  height="520"/>
-          <rect x="700"  y="460" width="85"  height="440"/>
-          <rect x="760"  y="410" width="55"  height="490"/>
-          <rect x="800"  y="370" width="40"  height="530"/>
-          <rect x="860"  y="490" width="70"  height="410"/>
-          <rect x="910"  y="440" width="45"  height="460"/>
-          <rect x="940"  y="400" width="30"  height="500"/>
-          <rect x="990"  y="470" width="80"  height="430"/>
-          <rect x="1050" y="430" width="50"  height="470"/>
-          <rect x="1080" y="390" width="35"  height="510"/>
-          <rect x="1140" y="510" width="75"  height="390"/>
-          <rect x="1190" y="450" width="55"  height="450"/>
-          <rect x="1230" y="400" width="40"  height="500"/>
-          <rect x="1290" y="480" width="80"  height="420"/>
-          <rect x="1350" y="430" width="60"  height="470"/>
-          <rect x="1390" y="380" width="45"  height="520"/>
-          <rect x="1450" y="500" width="70"  height="400"/>
-          <rect x="1500" y="440" width="50"  height="460"/>
-          <rect x="1540" y="390" width="60"  height="510"/>
-        </g>
-      </svg>
-    </div>
+  <!-- nav -->
+  <nav id="nav-bar"></nav>
 
-    <!-- background buildings with vines -->
-    <div class="p-layer" id="layer-buildings" data-depth="0.06">
-      <svg class="layer-svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax meet" xmlns="http://www.w3.org/2000/svg">
-        <!-- building A -->
-        <g fill="#0d1d0d">
-          <rect x="80"  y="280" width="180" height="620"/>
-          <rect x="90"  y="295" width="30"  height="45" fill="#0f220f"/>
-          <rect x="130" y="295" width="30"  height="45" fill="#0f220f"/>
-          <rect x="170" y="295" width="30"  height="45" fill="#0f220f"/>
-          <rect x="90"  y="360" width="30"  height="45" fill="#0e200e"/>
-          <rect x="130" y="360" width="30"  height="45" fill="#0e200e"/>
-          <rect x="170" y="360" width="30"  height="45" fill="#0e200e"/>
-          <rect x="90"  y="425" width="30"  height="45" fill="#0e1e0e"/>
-          <rect x="130" y="425" width="30"  height="45" fill="#0e1e0e"/>
-          <rect x="170" y="425" width="30"  height="45" fill="#0e1e0e"/>
-        </g>
-        <!-- vine drapes on building A -->
-        <path d="M100 280 Q95 320 102 360 Q98 400 105 450 Q100 500 108 560" stroke="#1a3a10" stroke-width="2" fill="none" opacity="0.7"/>
-        <path d="M140 280 Q145 330 138 380 Q142 430 136 480" stroke="#1a3a10" stroke-width="1.5" fill="none" opacity="0.5"/>
-        <ellipse cx="103" cy="340" rx="8" ry="5" fill="#1e4012" opacity="0.6"/>
-        <ellipse cx="140" cy="310" rx="6" ry="4" fill="#1e4012" opacity="0.5"/>
-        <ellipse cx="107" cy="420" rx="7" ry="4" fill="#1a3a10" opacity="0.6"/>
-
-        <!-- building B -->
-        <g fill="#0c1c0c">
-          <rect x="320" y="220" width="220" height="680"/>
-          <rect x="335" y="238" width="35"  height="50" fill="#10230f"/>
-          <rect x="380" y="238" width="35"  height="50" fill="#10230f"/>
-          <rect x="425" y="238" width="35"  height="50" fill="#10230f"/>
-          <rect x="470" y="238" width="35"  height="50" fill="#10230f"/>
-          <rect x="335" y="310" width="35"  height="50" fill="#0f210f"/>
-          <rect x="380" y="310" width="35"  height="50" fill="#0f210f"/>
-          <rect x="425" y="310" width="35"  height="50" fill="#0f210f"/>
-          <rect x="470" y="310" width="35"  height="50" fill="#0f210f"/>
-          <rect x="335" y="382" width="35"  height="50" fill="#0e1f0e"/>
-          <rect x="380" y="382" width="35"  height="50" fill="#0e1f0e"/>
-          <rect x="425" y="382" width="35"  height="50" fill="#0e1f0e"/>
-          <rect x="470" y="382" width="35"  height="50" fill="#0e1f0e"/>
-        </g>
-        <!-- cranes -->
-        <line x1="380" y1="220" x2="380" y2="120" stroke="#162816" stroke-width="3"/>
-        <line x1="380" y1="140" x2="480" y2="140" stroke="#162816" stroke-width="2"/>
-        <line x1="380" y1="140" x2="310" y2="180" stroke="#162816" stroke-width="1.5"/>
-        <!-- vines B -->
-        <path d="M350 220 Q346 270 354 330 Q348 390 356 460 Q350 530 360 600" stroke="#1c3e12" stroke-width="2.5" fill="none" opacity="0.8"/>
-        <path d="M440 220 Q445 280 438 350 Q444 420 436 490" stroke="#1a3a10" stroke-width="2" fill="none" opacity="0.6"/>
-        <ellipse cx="354" cy="290" rx="10" ry="6" fill="#204514" opacity="0.7"/>
-        <ellipse cx="352" cy="380" rx="9"  ry="5" fill="#1c3e12" opacity="0.6"/>
-        <ellipse cx="440" cy="300" rx="7"  ry="4" fill="#1a3a10" opacity="0.5"/>
-
-        <!-- building C right side -->
-        <g fill="#0b1b0c">
-          <rect x="1160" y="260" width="200" height="640"/>
-          <rect x="1175" y="278" width="30"  height="44" fill="#0e2010"/>
-          <rect x="1215" y="278" width="30"  height="44" fill="#0e2010"/>
-          <rect x="1255" y="278" width="30"  height="44" fill="#0e2010"/>
-          <rect x="1295" y="278" width="30"  height="44" fill="#0e2010"/>
-          <rect x="1175" y="344" width="30"  height="44" fill="#0d1f0f"/>
-          <rect x="1215" y="344" width="30"  height="44" fill="#0d1f0f"/>
-          <rect x="1255" y="344" width="30"  height="44" fill="#0d1f0f"/>
-          <rect x="1295" y="344" width="30"  height="44" fill="#0d1f0f"/>
-        </g>
-        <path d="M1200 260 Q1196 310 1204 370 Q1198 430 1206 500" stroke="#1a3a10" stroke-width="2" fill="none" opacity="0.7"/>
-        <ellipse cx="1202" cy="330" rx="9" ry="5" fill="#1e4012" opacity="0.6"/>
-
-        <!-- building D far right -->
-        <g fill="#0c1a0b">
-          <rect x="1420" y="300" width="160" height="600"/>
-          <rect x="1435" y="318" width="28"  height="40" fill="#0f2010"/>
-          <rect x="1473" y="318" width="28"  height="40" fill="#0f2010"/>
-          <rect x="1511" y="318" width="28"  height="40" fill="#0f2010"/>
-          <rect x="1549" y="318" width="28"  height="40" fill="#0f2010"/>
-        </g>
-      </svg>
-    </div>
-
-    <!-- billboard layer -->
-    <div class="p-layer" id="layer-billboard" data-depth="0.12">
-      <svg class="layer-svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax meet" xmlns="http://www.w3.org/2000/svg" id="billboard-svg">
-        <!-- billboard pole -->
-        <rect x="784" y="360" width="32" height="260" fill="#0e1e0e"/>
-        <rect x="786" y="362" width="4"  height="258" fill="#162816" opacity="0.5"/>
-
-        <!-- billboard frame outer -->
-        <rect x="490" y="120" width="620" height="260" rx="4" fill="#0c1c0c" stroke="#1e3e1a" stroke-width="3"/>
-        <!-- billboard frame inner border -->
-        <rect x="498" y="128" width="604" height="244" rx="2" fill="#0a180a" stroke="#162816" stroke-width="1"/>
-
-        <!-- billboard amber glow backing -->
-        <rect x="502" y="132" width="596" height="236" rx="2" fill="#120e02" id="billboard-bg"
-              style="animation:billboardGlow 6s ease-in-out infinite;"/>
-
-        <!-- billboard content area -->
-        <rect x="506" y="136" width="588" height="228" rx="1" fill="#0f0c02" opacity="0.9"/>
-
-        <!-- your name — glitch reveal -->
-        <g id="billboard-name" style="animation:billboardGlitch 2.2s ease-out 0.3s both;">
-          <text x="800" y="228"
-            text-anchor="middle"
-            font-family="'Cinzel',serif"
-            font-weight="700"
-            font-size="64"
-            fill="#d4a830"
-            letter-spacing="8">Ashor Dev</text>
-          <text x="800" y="258"
-            text-anchor="middle"
-            font-family="'Space Mono',monospace"
-            font-size="11"
-            fill="#7a6020"
-            letter-spacing="4">WORLD BUILDER · ENV SYSTEMS · GAME DEV</text>
-        </g>
-
-        <!-- billboard scan line overlay -->
-        <rect x="506" y="136" width="588" height="228" fill="none"
-          stroke="#c4921a" stroke-width="0.5" opacity="0.15"/>
-
-        <!-- horizontal scan lines -->
-        <g stroke="#c4921a" stroke-width="0.3" opacity="0.06">
-          <line x1="506" y1="148" x2="1094" y2="148"/>
-          <line x1="506" y1="160" x2="1094" y2="160"/>
-          <line x1="506" y1="172" x2="1094" y2="172"/>
-          <line x1="506" y1="184" x2="1094" y2="184"/>
-          <line x1="506" y1="196" x2="1094" y2="196"/>
-          <line x1="506" y1="208" x2="1094" y2="208"/>
-          <line x1="506" y1="220" x2="1094" y2="220"/>
-          <line x1="506" y1="232" x2="1094" y2="232"/>
-          <line x1="506" y1="244" x2="1094" y2="244"/>
-          <line x1="506" y1="256" x2="1094" y2="256"/>
-          <line x1="506" y1="268" x2="1094" y2="268"/>
-          <line x1="506" y1="280" x2="1094" y2="280"/>
-          <line x1="506" y1="292" x2="1094" y2="292"/>
-          <line x1="506" y1="304" x2="1094" y2="304"/>
-          <line x1="506" y1="316" x2="1094" y2="316"/>
-          <line x1="506" y1="328" x2="1094" y2="328"/>
-          <line x1="506" y1="340" x2="1094" y2="340"/>
-          <line x1="506" y1="352" x2="1094" y2="352"/>
-        </g>
-
-        <!-- AF focus bracket on billboard -->
-        <g stroke="#c4921a" stroke-width="1.2" fill="none" opacity="0.55">
-          <path d="M494 114 L494 126 M494 114 L508 114"/>
-          <path d="M1106 114 L1106 126 M1106 114 L1092 114"/>
-          <path d="M494 386 L494 374 M494 386 L508 386"/>
-          <path d="M1106 386 L1106 374 M1106 386 L1092 386"/>
-        </g>
-
-        <!-- AF crosshair center -->
-        <g stroke="#c4921a" stroke-width="0.8" fill="none" opacity="0.4">
-          <line x1="790" y1="240" x2="770" y2="240"/>
-          <line x1="810" y1="240" x2="830" y2="240"/>
-          <line x1="800" y1="230" x2="800" y2="212"/>
-          <line x1="800" y1="250" x2="800" y2="268"/>
-          <circle cx="800" cy="240" r="5" fill="none"/>
-        </g>
-
-        <!-- vines on billboard frame -->
-        <path d="M490 200 Q484 230 488 270 Q482 310 486 350 Q490 380 490 380" stroke="#1e4014" stroke-width="2.5" fill="none"/>
-        <ellipse cx="487" cy="240" rx="10" ry="6" fill="#224816" opacity="0.8"/>
-        <ellipse cx="489" cy="300" rx="8"  ry="5" fill="#1e4214" opacity="0.7"/>
-        <ellipse cx="486" cy="355" rx="9"  ry="5" fill="#1c3e12" opacity="0.6"/>
-        <path d="M1110 180 Q1116 220 1112 260 Q1118 300 1114 350" stroke="#1e4014" stroke-width="2" fill="none"/>
-        <ellipse cx="1113" cy="230" rx="8" ry="5" fill="#214616" opacity="0.7"/>
-        <ellipse cx="1115" cy="310" rx="7" ry="4" fill="#1e4212" opacity="0.6"/>
-      </svg>
-    </div>
-
-    <!-- rooftop + avatar layer -->
-    <div class="p-layer" id="layer-rooftop" data-depth="0.20">
-      <svg class="layer-svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax meet" xmlns="http://www.w3.org/2000/svg">
-
-        <!-- rooftop building face -->
-        <rect x="300" y="500" width="1000" height="400" fill="#0b1b0c"/>
-        <!-- rooftop surface -->
-        <rect x="280" y="488" width="1040" height="28" fill="#112011" rx="2"/>
-        <!-- rooftop edge lip -->
-        <rect x="278" y="510" width="1044" height="8" fill="#0f1e0f"/>
-
-        <!-- rooftop details: HVAC units -->
-        <g fill="#0d1d0d" stroke="#162816" stroke-width="0.5">
-          <rect x="340" y="450" width="80" height="55" rx="2"/>
-          <rect x="350" y="442" width="60" height="14" rx="1"/>
-          <rect x="355" y="460" width="8"  height="30" fill="#121f12"/>
-          <rect x="372" y="460" width="8"  height="30" fill="#121f12"/>
-          <rect x="389" y="460" width="8"  height="30" fill="#121f12"/>
-        </g>
-        <g fill="#0d1d0d" stroke="#162816" stroke-width="0.5">
-          <rect x="1180" y="448" width="90" height="50" rx="2"/>
-          <rect x="1195" y="440" width="60" height="13" rx="1"/>
-        </g>
-
-        <!-- water tower -->
-        <rect x="1260" y="360" width="14" height="130" fill="#0c1c0c"/>
-        <rect x="1268" y="360" width="14" height="130" fill="#0c1c0c"/>
-        <ellipse cx="1268" cy="362" rx="36" ry="12" fill="#0f200f"/>
-        <rect x="1232" y="360" width="72" height="80" rx="3" fill="#0e1e0e"/>
-        <ellipse cx="1268" cy="440" rx="36" ry="10" fill="#0c1a0c"/>
-
-        <!-- pipe / ductwork -->
-        <path d="M 420 488 Q 420 470 440 465 L 560 465 Q 580 465 580 450 L 580 440" stroke="#112211" stroke-width="6" fill="none" stroke-linecap="round"/>
-        <path d="M 1100 488 Q 1100 470 1080 465 L 980 465 Q 960 465 960 450" stroke="#112211" stroke-width="5" fill="none" stroke-linecap="round"/>
-
-        <!-- avatar — rear facing, sitting on rooftop edge -->
-        <!-- sitting position: legs dangling over edge -->
-        <g id="avatar" transform="translate(760, 430)">
-          <!-- legs -->
-          <rect x="-12" y="50" width="10" height="40" rx="5" fill="#1a2e1a"/>
-          <rect x="2"   y="50" width="10" height="40" rx="5" fill="#1a2e1a"/>
-          <!-- shoes -->
-          <ellipse cx="-7"  cy="92" rx="8" ry="5" fill="#111e11"/>
-          <ellipse cx="7"   cy="92" rx="8" ry="5" fill="#111e11"/>
-          <!-- torso / jacket -->
-          <rect x="-18" y="12" width="36" height="42" rx="6" fill="#182818"/>
-          <!-- jacket detail - collar/hood -->
-          <path d="M-18 18 Q-14 12 0 10 Q14 12 18 18" fill="#1e3a1e" stroke="none"/>
-          <!-- arms resting -->
-          <rect x="-26" y="20" width="12" height="28" rx="5" fill="#182818"/>
-          <rect x="14"  y="20" width="12" height="28" rx="5" fill="#182818"/>
-          <!-- head (hood up, facing away) -->
-          <ellipse cx="0" cy="4" rx="14" ry="15" fill="#1e3a1e"/>
-          <!-- hood shadow -->
-          <ellipse cx="0" cy="6" rx="10" ry="10" fill="#162e16"/>
-          <!-- subtle ear/neck -->
-          <rect x="-16" y="8"  width="6" height="10" rx="3" fill="#1a3018"/>
-          <rect x="10"  y="8"  width="6" height="10" rx="3" fill="#1a3018"/>
-        </g>
-      </svg>
-    </div>
-
-    <!-- foreground bushes -->
-    <div class="p-layer" id="layer-fg" data-depth="0.30" id="foliage-layer">
-      <svg class="layer-svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax meet" xmlns="http://www.w3.org/2000/svg" id="foliage-svg">
-
-        <!-- left fg bush cluster — FOLIAGE_ZONE id for proximity detection -->
-        <g class="foliage-zone" data-cx="200" data-cy="780">
-          <ellipse cx="80"  cy="820" rx="90"  ry="55" fill="#132813"/>
-          <ellipse cx="160" cy="800" rx="80"  ry="50" fill="#163016"/>
-          <ellipse cx="240" cy="830" rx="70"  ry="45" fill="#112611"/>
-          <ellipse cx="130" cy="780" rx="60"  ry="40" fill="#183018"/>
-          <ellipse cx="60"  cy="790" rx="50"  ry="35" fill="#142a14"/>
-          <ellipse cx="200" cy="810" rx="55"  ry="38" fill="#163216"/>
-          <!-- hanging vines -->
-          <path d="M50  730 Q45  760 50  790 Q46  820 52  850" stroke="#1e4214" stroke-width="2" fill="none"/>
-          <path d="M120 720 Q125 755 118 785 Q123 815 116 850" stroke="#1a3c12" stroke-width="1.5" fill="none"/>
-          <path d="M190 715 Q186 748 192 778 Q188 808 194 840" stroke="#1e4014" stroke-width="1.5" fill="none"/>
-          <!-- leaves on vines -->
-          <ellipse cx="50"  cy="760" rx="8" ry="5" fill="#224a18" transform="rotate(-20,50,760)"/>
-          <ellipse cx="120" cy="745" rx="7" ry="4" fill="#204616" transform="rotate(15,120,745)"/>
-          <ellipse cx="192" cy="738" rx="7" ry="4" fill="#224a16" transform="rotate(-10,192,738)"/>
-          <ellipse cx="51"  cy="800" rx="6" ry="4" fill="#1e4214" transform="rotate(25,51,800)"/>
-          <ellipse cx="117" cy="795" rx="6" ry="3" fill="#1c3e12" transform="rotate(-15,117,795)"/>
-        </g>
-
-        <!-- right fg bush cluster -->
-        <g class="foliage-zone" data-cx="1400" data-cy="780">
-          <ellipse cx="1520" cy="820" rx="90"  ry="55" fill="#122712"/>
-          <ellipse cx="1440" cy="800" rx="80"  ry="50" fill="#153015"/>
-          <ellipse cx="1360" cy="830" rx="70"  ry="45" fill="#112511"/>
-          <ellipse cx="1470" cy="780" rx="60"  ry="40" fill="#173117"/>
-          <ellipse cx="1540" cy="795" rx="50"  ry="35" fill="#132913"/>
-          <ellipse cx="1400" cy="812" rx="55"  ry="38" fill="#153215"/>
-          <!-- hanging vines -->
-          <path d="M1550 725 Q1555 758 1549 790 Q1554 820 1548 850" stroke="#1e4214" stroke-width="2" fill="none"/>
-          <path d="M1480 718 Q1475 752 1482 784 Q1477 815 1484 848" stroke="#1a3c12" stroke-width="1.5" fill="none"/>
-          <path d="M1410 715 Q1414 748 1408 778 Q1412 808 1406 840" stroke="#1c3e12" stroke-width="1.5" fill="none"/>
-          <!-- leaves -->
-          <ellipse cx="1549" cy="758" rx="8" ry="5" fill="#224a18" transform="rotate(20,1549,758)"/>
-          <ellipse cx="1480" cy="742" rx="7" ry="4" fill="#1e4616" transform="rotate(-15,1480,742)"/>
-          <ellipse cx="1408" cy="736" rx="7" ry="4" fill="#224a16" transform="rotate(10,1408,736)"/>
-        </g>
-
-        <!-- bottom center ground cover -->
-        <ellipse cx="800" cy="900" rx="500" ry="60" fill="#0e200e" opacity="0.8"/>
-        <ellipse cx="800" cy="895" rx="380" ry="40" fill="#112411" opacity="0.6"/>
-
-        <!-- small fg detail plants -->
-        <g fill="#1a3a16" opacity="0.9">
-          <ellipse cx="650" cy="870" rx="35" ry="22"/>
-          <ellipse cx="700" cy="860" rx="28" ry="18"/>
-          <ellipse cx="900" cy="868" rx="32" ry="20"/>
-          <ellipse cx="950" cy="858" rx="26" ry="16"/>
-        </g>
-      </svg>
-    </div>
-
-    </div><!-- end #scene-zoom -->
-
-    <!-- HUD overlay -->
-    <div id="hud">
-      <!-- rule of thirds lines -->
-      <div class="rot-line rot-h" id="rl1"></div>
-      <div class="rot-line rot-h" id="rl2"></div>
-      <div class="rot-line rot-v" id="rv1"></div>
-      <div class="rot-line rot-v" id="rv2"></div>
-      <!-- corner brackets -->
-      <div class="bracket tl"></div>
-      <div class="bracket tr"></div>
-      <div class="bracket bl"></div>
-      <div class="bracket br"></div>
-      <!-- convergence lines canvas -->
-      <canvas id="conv-canvas"></canvas>
-    </div>
-
-    <!-- particle canvas -->
-    <canvas id="particle-canvas"></canvas>
-
-  </div><!-- end #hero -->
-
-  <!-- ── PERSISTENT UI — sits above all sections ── -->
-  <div id="logo"><span>YN · ENV</span></div>
-
-  <nav id="nav-bar">
-    <div id="nav-inner">
-      <div id="nav-readouts">
-        <span class="readout" id="r-iso">ISO 800</span>
-        <span class="readout" id="r-f">F/2.8</span>
-      </div>
-      <div id="nav-links">
-        <div class="nav-item nav-home active-nav" data-target="home">
-          <div class="nav-marker"></div>
-          <span class="nav-label">Home</span>
-        </div>
-        <div class="nav-divider"></div>
-        <div class="nav-item" data-target="1">
-          <div class="nav-marker"></div>
-          <span class="nav-label">Systems</span>
-        </div>
-        <div class="nav-divider"></div>
-        <div class="nav-item" data-target="2">
-          <div class="nav-marker"></div>
-          <span class="nav-label">Models</span>
-        </div>
-        <div class="nav-divider"></div>
-        <div class="nav-item" data-target="3">
-          <div class="nav-marker"></div>
-          <span class="nav-label">Art</span>
-        </div>
-        <div class="nav-divider"></div>
-        <div class="nav-item" data-target="4">
-          <div class="nav-marker"></div>
-          <span class="nav-label">About</span>
-        </div>
-      </div>
-      <span id="nav-mode-pill">MODE: EXPLORE</span>
-    </div>
-  </nav>
-
+  <!-- rec + section label -->
   <div id="rec">
     <div id="rec-dot"></div>
     <span id="rec-text">REC · <span id="rec-timer">00:00</span></span>
   </div>
-
   <div id="section-label">
     <div class="sl-main">Hero · Rooftop</div>
     <div class="sl-sub">F/2.8 · AF-S · ISO 800</div>
   </div>
 
+  <!-- enter hint -->
   <div id="enter-hint">
     <span>explore the world</span>
     <div id="enter-hint-dot"></div>
   </div>
 
-  <!-- ── SYSTEMS SECTION ── -->
-  <div class="section right" id="sec-systems" data-section="1">
-    <div class="inner-section">
-      <div class="section-hud">SYSTEMS · ENV PROGRAMMING · C#</div>
-      <!-- background scene: circuit / forest grid -->
-      <svg class="scene-canvas" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
-        <!-- ground plane -->
-        <rect x="0" y="620" width="1600" height="280" fill="#060e06"/>
-        <!-- horizon glow -->
-        <ellipse cx="800" cy="620" rx="700" ry="60" fill="#0e2e10" opacity="0.6"/>
-        <!-- tall trees silhouette -->
-        <g fill="#0c1e0c" opacity="0.85">
-          <rect x="60"   y="320" width="22" height="300"/><polygon points="71,200 20,360 122,360"/>
-          <rect x="160"  y="350" width="18" height="270"/><polygon points="169,230 125,370 213,370"/>
-          <rect x="290"  y="290" width="26" height="330"/><polygon points="303,160 248,320 358,320"/>
-          <rect x="430"  y="340" width="20" height="280"/><polygon points="440,218 400,355 480,355"/>
-          <rect x="560"  y="310" width="22" height="310"/><polygon points="571,190 527,335 615,335"/>
-          <rect x="700"  y="260" width="28" height="360"/><polygon points="714,130 655,290 773,290"/>
-          <rect x="860"  y="270" width="26" height="350"/><polygon points="873,140 818,285 928,285"/>
-          <rect x="1000" y="320" width="22" height="300"/><polygon points="1011,200 968,335 1054,335"/>
-          <rect x="1130" y="300" width="24" height="320"/><polygon points="1142,175 1094,315 1190,315"/>
-          <rect x="1260" y="350" width="20" height="270"/><polygon points="1270,228 1232,365 1308,365"/>
-          <rect x="1380" y="290" width="26" height="330"/><polygon points="1393,160 1345,305 1441,305"/>
-          <rect x="1510" y="340" width="18" height="280"/><polygon points="1519,220 1482,355 1556,355"/>
-        </g>
-        <!-- mist layer -->
-        <ellipse cx="800" cy="630" rx="900" ry="55" fill="#0a1e0a" opacity="0.45"/>
-        <ellipse cx="400" cy="650" rx="500" ry="40" fill="#081808" opacity="0.35"/>
-        <ellipse cx="1200" cy="645" rx="480" ry="38" fill="#081808" opacity="0.35"/>
-        <!-- circuit trace accents on ground -->
-        <g stroke="#1e3e1e" stroke-width="0.8" fill="none" opacity="0.5">
-          <path d="M0 700 L200 700 L200 720 L400 720 L400 700 L700 700"/>
-          <path d="M900 700 L1200 700 L1200 720 L1400 720 L1400 700 L1600 700"/>
-          <circle cx="200" cy="700" r="3" fill="#1e4214"/>
-          <circle cx="400" cy="720" r="3" fill="#1e4214"/>
-          <circle cx="1200" cy="700" r="3" fill="#1e4214"/>
-          <circle cx="1400" cy="720" r="3" fill="#1e4214"/>
-        </g>
-        <!-- data stream lines -->
-        <g stroke="#2d5e30" stroke-width="0.5" opacity="0.2">
-          <line x1="0" y1="480" x2="1600" y2="480"/>
-          <line x1="0" y1="540" x2="1600" y2="540"/>
-        </g>
-      </svg>
-      <div class="section-card">
-        <div class="section-title">Environmental Systems</div>
-        <div class="section-sub">The invisible architecture of living worlds</div>
-        <div class="section-tags">
-          <span class="s-tag">C#</span>
-          <span class="s-tag">Unity</span>
-          <span class="s-tag">Procedural</span>
-          <span class="s-tag">Simulation</span>
-        </div>
-      </div>
-    </div>
-  </div>
+  <!-- ── HERO SCENE ── -->
+  <div id="hero">
+    <div id="scene-zoom">
 
-  <!-- ── MODELS SECTION ── -->
-  <div class="section right" id="sec-models" data-section="2">
-    <div class="inner-section">
-      <div class="section-hud">MODELS · BLENDER · PBR TEXTURES</div>
-      <svg class="scene-canvas" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
-        <!-- floor plane -->
-        <rect x="0" y="600" width="1600" height="300" fill="#060c0a"/>
-        <!-- floor grid perspective -->
-        <g stroke="#122018" stroke-width="0.7" opacity="0.6">
-          <line x1="800" y1="600" x2="0"    y2="900"/><line x1="800" y1="600" x2="200"  y2="900"/>
-          <line x1="800" y1="600" x2="400"  y2="900"/><line x1="800" y1="600" x2="600"  y2="900"/>
-          <line x1="800" y1="600" x2="800"  y2="900"/><line x1="800" y1="600" x2="1000" y2="900"/>
-          <line x1="800" y1="600" x2="1200" y2="900"/><line x1="800" y1="600" x2="1400" y2="900"/>
-          <line x1="800" y1="600" x2="1600" y2="900"/>
-          <line x1="0" y1="680" x2="1600" y2="680"/><line x1="0" y1="740" x2="1600" y2="740"/>
-          <line x1="0" y1="800" x2="1600" y2="800"/><line x1="0" y1="860" x2="1600" y2="860"/>
-        </g>
-        <!-- low-poly rock shapes (stylized 3D models) -->
-        <g fill="#0e1e1a" stroke="#162820" stroke-width="1">
-          <polygon points="220,600 160,600 190,520"/>
-          <polygon points="190,520 160,600 140,560"/>
-          <polygon points="190,520 220,600 240,570"/>
-        </g>
-        <g fill="#0d1c18" stroke="#142618" stroke-width="1">
-          <polygon points="1380,600 1320,600 1350,510"/>
-          <polygon points="1350,510 1320,600 1300,555"/>
-          <polygon points="1350,510 1380,600 1400,558"/>
-        </g>
-        <!-- wireframe cube in center bg -->
-        <g stroke="#1e3e30" stroke-width="0.8" fill="none" opacity="0.35">
-          <rect x="720" y="360" width="160" height="160"/>
-          <polygon points="720,360 760,320 920,320 880,360"/>
-          <polygon points="880,360 920,320 920,480 880,520"/>
-          <line x1="720" y1="520" x2="760" y2="480"/>
-          <line x1="760" y1="480" x2="920" y2="480"/>
-          <line x1="760" y1="480" x2="760" y2="320"/>
-        </g>
-        <!-- ambient teal glow -->
-        <ellipse cx="800" cy="610" rx="600" ry="50" fill="#0a1e1a" opacity="0.5"/>
-      </svg>
-      <div class="section-card">
-        <div class="section-title">3D Models</div>
-        <div class="section-sub">Low poly to mid poly · stylized to realistic</div>
-        <div class="section-tags">
-          <span class="s-tag">Blender</span>
-          <span class="s-tag">PBR</span>
-          <span class="s-tag">Low-Poly</span>
-          <span class="s-tag">Rigging</span>
-        </div>
+      <!-- sky -->
+      <div class="p-layer" id="layer-sky" data-depth="0">
+        <canvas id="sky-canvas"></canvas>
       </div>
-    </div>
-  </div>
 
-  <!-- ── ART SECTION ── -->
-  <div class="section right" id="sec-art" data-section="3">
-    <div class="inner-section">
-      <div class="section-hud">ART · KRITA · PHOTOSHOP · MAPS</div>
-      <svg class="scene-canvas" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
-        <!-- warm amber horizon -->
-        <rect x="0" y="0" width="1600" height="900" fill="#080604"/>
-        <ellipse cx="800" cy="900" rx="900" ry="350" fill="#1a1004" opacity="0.8"/>
-        <ellipse cx="800" cy="900" rx="600" ry="220" fill="#201408" opacity="0.6"/>
-        <!-- mountain range silhouette -->
-        <g fill="#100c04" opacity="0.9">
-          <polygon points="0,900 0,600 120,420 240,580 380,350 500,500 640,300 760,480 800,380 840,480 960,310 1100,500 1240,360 1380,540 1520,380 1600,460 1600,900"/>
-        </g>
-        <g fill="#0c0a02" opacity="0.7">
-          <polygon points="0,900 0,700 100,560 200,660 350,490 480,600 600,440 720,560 800,460 880,560 1000,430 1150,600 1300,480 1450,620 1600,520 1600,900"/>
-        </g>
-        <!-- sketch-like construction lines -->
-        <g stroke="#2a1e06" stroke-width="0.6" opacity="0.3" fill="none">
-          <line x1="0" y1="300" x2="1600" y2="300"/>
-          <line x1="0" y1="500" x2="1600" y2="500"/>
-          <line x1="400" y1="0" x2="400" y2="900"/>
-          <line x1="800" y1="0" x2="800" y2="900"/>
-          <line x1="1200" y1="0" x2="1200" y2="900"/>
-        </g>
-        <!-- golden "sun" disc -->
-        <circle cx="800" cy="500" r="80" fill="none" stroke="#3a2a06" stroke-width="0.8" opacity="0.4"/>
-        <circle cx="800" cy="500" r="45" fill="#1a1004" stroke="#2a1e06" stroke-width="0.6" opacity="0.5"/>
-        <!-- compass rose accent -->
-        <g stroke="#3a2808" stroke-width="0.8" opacity="0.25" transform="translate(200,200)">
-          <line x1="0" y1="-30" x2="0" y2="30"/>
-          <line x1="-30" y1="0" x2="30" y2="0"/>
-          <line x1="-21" y1="-21" x2="21" y2="21"/>
-          <line x1="21" y1="-21" x2="-21" y2="21"/>
-          <circle cx="0" cy="0" r="30" fill="none"/>
-        </g>
-      </svg>
-      <div class="section-card">
-        <div class="section-title">Concept Art</div>
-        <div class="section-sub">Scene design · world maps · visual language</div>
-        <div class="section-tags">
-          <span class="s-tag">Krita</span>
-          <span class="s-tag">Photoshop</span>
-          <span class="s-tag">World Maps</span>
-          <span class="s-tag">Concepts</span>
-        </div>
+      <!-- distant city -->
+      <div class="p-layer" id="layer-city" data-depth="0.02">
+        <svg class="layer-svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax meet" xmlns="http://www.w3.org/2000/svg">
+          <g fill="#0c1a0c" opacity="0.7">
+            <rect x="0" y="500" width="60" height="400"/><rect x="40" y="440" width="40" height="460"/>
+            <rect x="100" y="520" width="80" height="380"/><rect x="160" y="460" width="50" height="440"/>
+            <rect x="190" y="400" width="30" height="500"/><rect x="240" y="480" width="70" height="420"/>
+            <rect x="290" y="430" width="45" height="470"/><rect x="320" y="380" width="35" height="520"/>
+            <rect x="380" y="500" width="90" height="400"/><rect x="450" y="440" width="55" height="460"/>
+            <rect x="490" y="410" width="30" height="490"/><rect x="540" y="470" width="75" height="430"/>
+            <rect x="600" y="420" width="50" height="480"/><rect x="630" y="380" width="40" height="520"/>
+            <rect x="700" y="460" width="85" height="440"/><rect x="760" y="410" width="55" height="490"/>
+            <rect x="800" y="370" width="40" height="530"/><rect x="860" y="490" width="70" height="410"/>
+            <rect x="910" y="440" width="45" height="460"/><rect x="940" y="400" width="30" height="500"/>
+            <rect x="990" y="470" width="80" height="430"/><rect x="1050" y="430" width="50" height="470"/>
+            <rect x="1080" y="390" width="35" height="510"/><rect x="1140" y="510" width="75" height="390"/>
+            <rect x="1190" y="450" width="55" height="450"/><rect x="1230" y="400" width="40" height="500"/>
+            <rect x="1290" y="480" width="80" height="420"/><rect x="1350" y="430" width="60" height="470"/>
+            <rect x="1390" y="380" width="45" height="520"/><rect x="1450" y="500" width="70" height="400"/>
+            <rect x="1500" y="440" width="50" height="460"/><rect x="1540" y="390" width="60" height="510"/>
+          </g>
+        </svg>
       </div>
-    </div>
-  </div>
 
-  <!-- ── ABOUT SECTION ── -->
-  <div class="section right" id="sec-about" data-section="4">
-    <div class="inner-section">
-      <div class="section-hud">ABOUT · CONTACT · FREELANCE</div>
-      <svg class="scene-canvas" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
-        <!-- deep teal darkness -->
-        <rect x="0" y="0" width="1600" height="900" fill="#040608"/>
-        <!-- scanning circle rings -->
-        <g stroke="#0e2028" stroke-width="0.8" fill="none" opacity="0.5">
-          <circle cx="800" cy="500" r="120"/><circle cx="800" cy="500" r="200"/>
-          <circle cx="800" cy="500" r="300"/><circle cx="800" cy="500" r="420"/>
-          <circle cx="800" cy="500" r="560"/>
-        </g>
-        <!-- radar sweep line (decorative) -->
-        <line x1="800" y1="500" x2="1200" y2="200" stroke="#163030" stroke-width="1" opacity="0.3"/>
-        <!-- node network -->
-        <g stroke="#0e2824" stroke-width="0.6" opacity="0.35">
-          <line x1="200" y1="200" x2="500" y2="350"/>
-          <line x1="500" y1="350" x2="700" y2="280"/>
-          <line x1="700" y1="280" x2="800" y2="500"/>
-          <line x1="800" y1="500" x2="1100" y2="400"/>
-          <line x1="1100" y1="400" x2="1400" y2="300"/>
-          <line x1="300" y1="700" x2="600" y2="600"/>
-          <line x1="600" y1="600" x2="800" y2="500"/>
-          <line x1="800" y1="500" x2="1000" y2="650"/>
-          <line x1="1000" y1="650" x2="1300" y2="700"/>
-        </g>
-        <!-- network nodes -->
-        <g fill="#163228" opacity="0.5">
-          <circle cx="200" cy="200" r="4"/><circle cx="500" cy="350" r="3"/>
-          <circle cx="700" cy="280" r="3"/><circle cx="800" cy="500" r="6"/>
-          <circle cx="1100" cy="400" r="3"/><circle cx="1400" cy="300" r="4"/>
-          <circle cx="300" cy="700" r="3"/><circle cx="600" cy="600" r="3"/>
-          <circle cx="1000" cy="650" r="3"/><circle cx="1300" cy="700" r="4"/>
-        </g>
-        <!-- horizon glow -->
-        <ellipse cx="800" cy="900" rx="700" ry="120" fill="#0a1e20" opacity="0.4"/>
-      </svg>
-      <div class="section-card">
-        <div class="section-title">About</div>
-        <div class="section-sub">Aspiring game developer · env systems specialist</div>
-        <div class="section-tags">
-          <span class="s-tag">Freelance</span>
-          <span class="s-tag">Open to work</span>
-          <span class="s-tag">Contact</span>
-        </div>
+      <!-- background buildings with vines -->
+      <div class="p-layer" id="layer-buildings" data-depth="0.06">
+        <svg class="layer-svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax meet" xmlns="http://www.w3.org/2000/svg">
+          <g fill="#0d1d0d">
+            <rect x="80" y="280" width="180" height="620"/>
+            <rect x="90" y="295" width="30" height="45" fill="#0f220f"/><rect x="130" y="295" width="30" height="45" fill="#0f220f"/>
+            <rect x="170" y="295" width="30" height="45" fill="#0f220f"/><rect x="90" y="360" width="30" height="45" fill="#0e200e"/>
+            <rect x="130" y="360" width="30" height="45" fill="#0e200e"/><rect x="170" y="360" width="30" height="45" fill="#0e200e"/>
+            <rect x="90" y="425" width="30" height="45" fill="#0e1e0e"/><rect x="130" y="425" width="30" height="45" fill="#0e1e0e"/>
+            <rect x="170" y="425" width="30" height="45" fill="#0e1e0e"/>
+          </g>
+          <path d="M100 280 Q95 320 102 360 Q98 400 105 450 Q100 500 108 560" stroke="#1a3a10" stroke-width="2" fill="none" opacity="0.7"/>
+          <path d="M140 280 Q145 330 138 380 Q142 430 136 480" stroke="#1a3a10" stroke-width="1.5" fill="none" opacity="0.5"/>
+          <ellipse cx="103" cy="340" rx="8" ry="5" fill="#1e4012" opacity="0.6"/>
+          <ellipse cx="140" cy="310" rx="6" ry="4" fill="#1e4012" opacity="0.5"/>
+          <ellipse cx="107" cy="420" rx="7" ry="4" fill="#1a3a10" opacity="0.6"/>
+          <g fill="#0c1c0c">
+            <rect x="320" y="220" width="220" height="680"/>
+            <rect x="335" y="238" width="35" height="50" fill="#10230f"/><rect x="380" y="238" width="35" height="50" fill="#10230f"/>
+            <rect x="425" y="238" width="35" height="50" fill="#10230f"/><rect x="470" y="238" width="35" height="50" fill="#10230f"/>
+            <rect x="335" y="310" width="35" height="50" fill="#0f210f"/><rect x="380" y="310" width="35" height="50" fill="#0f210f"/>
+            <rect x="425" y="310" width="35" height="50" fill="#0f210f"/><rect x="470" y="310" width="35" height="50" fill="#0f210f"/>
+            <rect x="335" y="382" width="35" height="50" fill="#0e1f0e"/><rect x="380" y="382" width="35" height="50" fill="#0e1f0e"/>
+            <rect x="425" y="382" width="35" height="50" fill="#0e1f0e"/><rect x="470" y="382" width="35" height="50" fill="#0e1f0e"/>
+          </g>
+          <line x1="380" y1="220" x2="380" y2="120" stroke="#162816" stroke-width="3"/>
+          <line x1="380" y1="140" x2="480" y2="140" stroke="#162816" stroke-width="2"/>
+          <line x1="380" y1="140" x2="310" y2="180" stroke="#162816" stroke-width="1.5"/>
+          <path d="M350 220 Q346 270 354 330 Q348 390 356 460 Q350 530 360 600" stroke="#1c3e12" stroke-width="2.5" fill="none" opacity="0.8"/>
+          <ellipse cx="354" cy="290" rx="10" ry="6" fill="#204514" opacity="0.7"/>
+          <ellipse cx="352" cy="380" rx="9" ry="5" fill="#1c3e12" opacity="0.6"/>
+          <g fill="#0b1b0c">
+            <rect x="1160" y="260" width="200" height="640"/>
+            <rect x="1175" y="278" width="30" height="44" fill="#0e2010"/><rect x="1215" y="278" width="30" height="44" fill="#0e2010"/>
+            <rect x="1255" y="278" width="30" height="44" fill="#0e2010"/><rect x="1295" y="278" width="30" height="44" fill="#0e2010"/>
+            <rect x="1175" y="344" width="30" height="44" fill="#0d1f0f"/><rect x="1215" y="344" width="30" height="44" fill="#0d1f0f"/>
+            <rect x="1255" y="344" width="30" height="44" fill="#0d1f0f"/><rect x="1295" y="344" width="30" height="44" fill="#0d1f0f"/>
+          </g>
+          <path d="M1200 260 Q1196 310 1204 370 Q1198 430 1206 500" stroke="#1a3a10" stroke-width="2" fill="none" opacity="0.7"/>
+          <ellipse cx="1202" cy="330" rx="9" ry="5" fill="#1e4012" opacity="0.6"/>
+          <g fill="#0c1a0b">
+            <rect x="1420" y="300" width="160" height="600"/>
+            <rect x="1435" y="318" width="28" height="40" fill="#0f2010"/><rect x="1473" y="318" width="28" height="40" fill="#0f2010"/>
+            <rect x="1511" y="318" width="28" height="40" fill="#0f2010"/><rect x="1549" y="318" width="28" height="40" fill="#0f2010"/>
+          </g>
+        </svg>
       </div>
+
+      <!-- billboard -->
+      <div class="p-layer" id="layer-billboard" data-depth="0.12">
+        <svg class="layer-svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax meet" xmlns="http://www.w3.org/2000/svg">
+          <rect x="784" y="360" width="32" height="260" fill="#0e1e0e"/>
+          <rect x="786" y="362" width="4" height="258" fill="#162816" opacity="0.5"/>
+          <rect x="490" y="120" width="620" height="260" rx="4" fill="#0c1c0c" stroke="#1e3e1a" stroke-width="3"/>
+          <rect x="498" y="128" width="604" height="244" rx="2" fill="#0a180a" stroke="#162816" stroke-width="1"/>
+          <rect x="502" y="132" width="596" height="236" rx="2" fill="#120e02" style="animation:billboardGlow 6s ease-in-out infinite;"/>
+          <rect x="506" y="136" width="588" height="228" rx="1" fill="#0f0c02" opacity="0.9"/>
+          <g style="animation:billboardGlitch 2.2s ease-out 0.3s both;">
+            <text x="800" y="228" text-anchor="middle" font-family="'Cinzel',serif" font-weight="700" font-size="64" fill="#d4a830" letter-spacing="8">Ashor Dev</text>
+            <text x="800" y="258" text-anchor="middle" font-family="'Space Mono',monospace" font-size="11" fill="#7a6020" letter-spacing="4">WORLD BUILDER · ENV SYSTEMS · GAME DEV</text>
+          </g>
+          <rect x="506" y="136" width="588" height="228" fill="none" stroke="#c4921a" stroke-width="0.5" opacity="0.15"/>
+          <g stroke="#c4921a" stroke-width="0.3" opacity="0.06">
+            <line x1="506" y1="148" x2="1094" y2="148"/><line x1="506" y1="160" x2="1094" y2="160"/>
+            <line x1="506" y1="172" x2="1094" y2="172"/><line x1="506" y1="184" x2="1094" y2="184"/>
+            <line x1="506" y1="196" x2="1094" y2="196"/><line x1="506" y1="208" x2="1094" y2="208"/>
+            <line x1="506" y1="220" x2="1094" y2="220"/><line x1="506" y1="232" x2="1094" y2="232"/>
+            <line x1="506" y1="244" x2="1094" y2="244"/><line x1="506" y1="256" x2="1094" y2="256"/>
+            <line x1="506" y1="268" x2="1094" y2="268"/><line x1="506" y1="280" x2="1094" y2="280"/>
+            <line x1="506" y1="292" x2="1094" y2="292"/><line x1="506" y1="304" x2="1094" y2="304"/>
+            <line x1="506" y1="316" x2="1094" y2="316"/><line x1="506" y1="328" x2="1094" y2="328"/>
+            <line x1="506" y1="340" x2="1094" y2="340"/><line x1="506" y1="352" x2="1094" y2="352"/>
+          </g>
+          <g stroke="#c4921a" stroke-width="1.2" fill="none" opacity="0.55">
+            <path d="M494 114 L494 126 M494 114 L508 114"/><path d="M1106 114 L1106 126 M1106 114 L1092 114"/>
+            <path d="M494 386 L494 374 M494 386 L508 386"/><path d="M1106 386 L1106 374 M1106 386 L1092 386"/>
+          </g>
+          <g stroke="#c4921a" stroke-width="0.8" fill="none" opacity="0.4">
+            <line x1="790" y1="240" x2="770" y2="240"/><line x1="810" y1="240" x2="830" y2="240"/>
+            <line x1="800" y1="230" x2="800" y2="212"/><line x1="800" y1="250" x2="800" y2="268"/>
+            <circle cx="800" cy="240" r="5" fill="none"/>
+          </g>
+          <path d="M490 200 Q484 230 488 270 Q482 310 486 350 Q490 380 490 380" stroke="#1e4014" stroke-width="2.5" fill="none"/>
+          <ellipse cx="487" cy="240" rx="10" ry="6" fill="#224816" opacity="0.8"/>
+          <ellipse cx="489" cy="300" rx="8" ry="5" fill="#1e4214" opacity="0.7"/>
+          <ellipse cx="486" cy="355" rx="9" ry="5" fill="#1c3e12" opacity="0.6"/>
+          <path d="M1110 180 Q1116 220 1112 260 Q1118 300 1114 350" stroke="#1e4014" stroke-width="2" fill="none"/>
+          <ellipse cx="1113" cy="230" rx="8" ry="5" fill="#214616" opacity="0.7"/>
+          <ellipse cx="1115" cy="310" rx="7" ry="4" fill="#1e4212" opacity="0.6"/>
+        </svg>
+      </div>
+
+      <!-- rooftop + avatar -->
+      <div class="p-layer" id="layer-rooftop" data-depth="0.20">
+        <svg class="layer-svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax meet" xmlns="http://www.w3.org/2000/svg">
+          <rect x="300" y="500" width="1000" height="400" fill="#0b1b0c"/>
+          <rect x="280" y="488" width="1040" height="28" fill="#112011" rx="2"/>
+          <rect x="278" y="510" width="1044" height="8" fill="#0f1e0f"/>
+          <g fill="#0d1d0d" stroke="#162816" stroke-width="0.5">
+            <rect x="340" y="450" width="80" height="55" rx="2"/>
+            <rect x="350" y="442" width="60" height="14" rx="1"/>
+            <rect x="355" y="460" width="8" height="30" fill="#121f12"/>
+            <rect x="372" y="460" width="8" height="30" fill="#121f12"/>
+            <rect x="389" y="460" width="8" height="30" fill="#121f12"/>
+          </g>
+          <g fill="#0d1d0d" stroke="#162816" stroke-width="0.5">
+            <rect x="1180" y="448" width="90" height="50" rx="2"/>
+            <rect x="1195" y="440" width="60" height="13" rx="1"/>
+          </g>
+          <rect x="1260" y="360" width="14" height="130" fill="#0c1c0c"/>
+          <rect x="1268" y="360" width="14" height="130" fill="#0c1c0c"/>
+          <ellipse cx="1268" cy="362" rx="36" ry="12" fill="#0f200f"/>
+          <rect x="1232" y="360" width="72" height="80" rx="3" fill="#0e1e0e"/>
+          <ellipse cx="1268" cy="440" rx="36" ry="10" fill="#0c1a0c"/>
+          <path d="M 420 488 Q 420 470 440 465 L 560 465 Q 580 465 580 450 L 580 440" stroke="#112211" stroke-width="6" fill="none" stroke-linecap="round"/>
+          <path d="M 1100 488 Q 1100 470 1080 465 L 980 465 Q 960 465 960 450" stroke="#112211" stroke-width="5" fill="none" stroke-linecap="round"/>
+          <g id="avatar" transform="translate(760, 430)">
+            <rect x="-12" y="50" width="10" height="40" rx="5" fill="#1a2e1a"/>
+            <rect x="2" y="50" width="10" height="40" rx="5" fill="#1a2e1a"/>
+            <ellipse cx="-7" cy="92" rx="8" ry="5" fill="#111e11"/>
+            <ellipse cx="7" cy="92" rx="8" ry="5" fill="#111e11"/>
+            <rect x="-18" y="12" width="36" height="42" rx="6" fill="#182818"/>
+            <path d="M-18 18 Q-14 12 0 10 Q14 12 18 18" fill="#1e3a1e" stroke="none"/>
+            <rect x="-26" y="20" width="12" height="28" rx="5" fill="#182818"/>
+            <rect x="14" y="20" width="12" height="28" rx="5" fill="#182818"/>
+            <ellipse cx="0" cy="4" rx="14" ry="15" fill="#1e3a1e"/>
+            <ellipse cx="0" cy="6" rx="10" ry="10" fill="#162e16"/>
+            <rect x="-16" y="8" width="6" height="10" rx="3" fill="#1a3018"/>
+            <rect x="10" y="8" width="6" height="10" rx="3" fill="#1a3018"/>
+          </g>
+        </svg>
+      </div>
+
+      <!-- foreground bushes -->
+      <div class="p-layer" id="layer-fg" data-depth="0.30">
+        <svg class="layer-svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax meet" xmlns="http://www.w3.org/2000/svg">
+          <g class="foliage-zone" data-cx="200" data-cy="780">
+            <ellipse cx="80" cy="820" rx="90" ry="55" fill="#132813"/>
+            <ellipse cx="160" cy="800" rx="80" ry="50" fill="#163016"/>
+            <ellipse cx="240" cy="830" rx="70" ry="45" fill="#112611"/>
+            <ellipse cx="130" cy="780" rx="60" ry="40" fill="#183018"/>
+            <ellipse cx="60" cy="790" rx="50" ry="35" fill="#142a14"/>
+            <ellipse cx="200" cy="810" rx="55" ry="38" fill="#163216"/>
+            <path d="M50 730 Q45 760 50 790 Q46 820 52 850" stroke="#1e4214" stroke-width="2" fill="none"/>
+            <path d="M120 720 Q125 755 118 785 Q123 815 116 850" stroke="#1a3c12" stroke-width="1.5" fill="none"/>
+            <path d="M190 715 Q186 748 192 778 Q188 808 194 840" stroke="#1e4014" stroke-width="1.5" fill="none"/>
+            <ellipse cx="50" cy="760" rx="8" ry="5" fill="#224a18" transform="rotate(-20,50,760)"/>
+            <ellipse cx="120" cy="745" rx="7" ry="4" fill="#204616" transform="rotate(15,120,745)"/>
+            <ellipse cx="192" cy="738" rx="7" ry="4" fill="#224a16" transform="rotate(-10,192,738)"/>
+            <ellipse cx="51" cy="800" rx="6" ry="4" fill="#1e4214" transform="rotate(25,51,800)"/>
+            <ellipse cx="117" cy="795" rx="6" ry="3" fill="#1c3e12" transform="rotate(-15,117,795)"/>
+          </g>
+          <g class="foliage-zone" data-cx="1400" data-cy="780">
+            <ellipse cx="1520" cy="820" rx="90" ry="55" fill="#122712"/>
+            <ellipse cx="1440" cy="800" rx="80" ry="50" fill="#153015"/>
+            <ellipse cx="1360" cy="830" rx="70" ry="45" fill="#112511"/>
+            <ellipse cx="1470" cy="780" rx="60" ry="40" fill="#173117"/>
+            <ellipse cx="1540" cy="795" rx="50" ry="35" fill="#132913"/>
+            <ellipse cx="1400" cy="812" rx="55" ry="38" fill="#153215"/>
+            <path d="M1550 725 Q1555 758 1549 790 Q1554 820 1548 850" stroke="#1e4214" stroke-width="2" fill="none"/>
+            <path d="M1480 718 Q1475 752 1482 784 Q1477 815 1484 848" stroke="#1a3c12" stroke-width="1.5" fill="none"/>
+            <path d="M1410 715 Q1414 748 1408 778 Q1412 808 1406 840" stroke="#1c3e12" stroke-width="1.5" fill="none"/>
+            <ellipse cx="1549" cy="758" rx="8" ry="5" fill="#224a18" transform="rotate(20,1549,758)"/>
+            <ellipse cx="1480" cy="742" rx="7" ry="4" fill="#1e4616" transform="rotate(-15,1480,742)"/>
+            <ellipse cx="1408" cy="736" rx="7" ry="4" fill="#224a16" transform="rotate(10,1408,736)"/>
+          </g>
+          <ellipse cx="800" cy="900" rx="500" ry="60" fill="#0e200e" opacity="0.8"/>
+          <ellipse cx="800" cy="895" rx="380" ry="40" fill="#112411" opacity="0.6"/>
+          <g fill="#1a3a16" opacity="0.9">
+            <ellipse cx="650" cy="870" rx="35" ry="22"/>
+            <ellipse cx="700" cy="860" rx="28" ry="18"/>
+            <ellipse cx="900" cy="868" rx="32" ry="20"/>
+            <ellipse cx="950" cy="858" rx="26" ry="16"/>
+          </g>
+        </svg>
+      </div>
+    </div><!-- end scene-zoom -->
+
+    <!-- HUD overlay -->
+    <div id="hud">
+      <div class="rot-line rot-h" id="rl1"></div>
+      <div class="rot-line rot-h" id="rl2"></div>
+      <div class="rot-line rot-v" id="rv1"></div>
+      <div class="rot-line rot-v" id="rv2"></div>
+      <canvas id="conv-canvas"></canvas>
     </div>
-  </div>
+
+    <canvas id="particle-canvas"></canvas>
+  </div><!-- end #hero -->
 
 </div><!-- end #site -->
 
+<script src="nav.js"></script>
 <script>
-/* ═══════════════════════════════════════════════
-   STATE
-═══════════════════════════════════════════════ */
-const W = () => window.innerWidth;
-const H = () => window.innerHeight;
-let mx = W()/2, my = H()/2;
-let currentSection = 0;
-const SECTIONS = ['hero','sec-systems','sec-models','sec-art','sec-about'];
-const NAV_META = [
-  {iso:'ISO 800',f:'F/2.8',mode:'EXPLORE',sub:'F/2.8 · AF-S · ISO 800'},
-  {iso:'ISO 3200',f:'F/4.0',mode:'SCAN: ENV',sub:'F/4.0 · MF · ISO 3200'},
-  {iso:'ISO 1600',f:'F/5.6',mode:'CAPTURE',sub:'F/5.6 · AF-C · ISO 1600'},
-  {iso:'ISO 400',f:'F/1.4',mode:'COMPOSE',sub:'F/1.4 · AF-S · ISO 400'},
-  {iso:'ISO 100',f:'F/8.0',mode:'REFLECT',sub:'F/8.0 · MF · ISO 100'}
-];
+const W=()=>window.innerWidth, H=()=>window.innerHeight;
+let mx=W()/2, my=H()/2;
 
-/* ═══════════════════════════════════════════════
-   SKY CANVAS — time-of-day gradient
-═══════════════════════════════════════════════ */
-const skyCanvas = document.getElementById('sky-canvas');
-const skyCtx = skyCanvas.getContext('2d');
+/* ── SKY ── */
+const skyCanvas=document.getElementById('sky-canvas');
+const skyCtx=skyCanvas.getContext('2d');
 function resizeSky(){skyCanvas.width=W();skyCanvas.height=H();}
 resizeSky();
-
 function getSkyColors(){
-  const h = new Date().getHours();
-  if(h>=5  && h<7)  return ['#1a1208','#2a1e0a','#1a2a10'];
-  if(h>=7  && h<10) return ['#1a200a','#162010','#0e1a0c'];
-  if(h>=10 && h<17) return ['#0c1a0e','#081408','#050e06'];
-  if(h>=17 && h<19) return ['#1a1206','#1e1a08','#0e1a0c'];
-  if(h>=19 && h<21) return ['#120e06','#1a1008','#0a1408'];
-  return ['#050a05','#080e08','#050a06'];
+  const h=new Date().getHours();
+  if(h>=5&&h<7)  return['#1a1208','#2a1e0a','#1a2a10'];
+  if(h>=7&&h<10) return['#1a200a','#162010','#0e1a0c'];
+  if(h>=10&&h<17)return['#0c1a0e','#081408','#050e06'];
+  if(h>=17&&h<19)return['#1a1206','#1e1a08','#0e1a0c'];
+  if(h>=19&&h<21)return['#120e06','#1a1008','#0a1408'];
+  return['#050a05','#080e08','#050a06'];
 }
-
 function drawSky(){
-  const [top,mid,bot] = getSkyColors();
-  const g = skyCtx.createLinearGradient(0,0,0,H());
-  g.addColorStop(0,top);
-  g.addColorStop(0.5,mid);
-  g.addColorStop(1,bot);
-  skyCtx.fillStyle=g;
-  skyCtx.fillRect(0,0,W(),H());
-
-  // stars
+  const[top,mid,bot]=getSkyColors();
+  const g=skyCtx.createLinearGradient(0,0,0,H());
+  g.addColorStop(0,top);g.addColorStop(0.5,mid);g.addColorStop(1,bot);
+  skyCtx.fillStyle=g;skyCtx.fillRect(0,0,W(),H());
   skyCtx.fillStyle='rgba(180,200,160,0.35)';
   for(let i=0;i<80;i++){
-    const sx=(i*137.5)%W();
-    const sy=(i*97.3)%(H()*0.55);
-    const sz=Math.random()<0.2?1.5:0.8;
-    skyCtx.beginPath();
-    skyCtx.arc(sx,sy,sz,0,Math.PI*2);
-    skyCtx.fill();
+    const sx=(i*137.5)%W(),sy=(i*97.3)%(H()*0.55),sz=Math.random()<0.2?1.5:0.8;
+    skyCtx.beginPath();skyCtx.arc(sx,sy,sz,0,Math.PI*2);skyCtx.fill();
   }
 }
 drawSky();
 
-/* ═══════════════════════════════════════════════
-   CONVERGENCE LINES CANVAS
-═══════════════════════════════════════════════ */
-const convCanvas = document.getElementById('conv-canvas');
-const convCtx = convCanvas.getContext('2d');
+/* ── CONVERGENCE LINES ── */
+const convCanvas=document.getElementById('conv-canvas');
+const convCtx=convCanvas.getContext('2d');
 function resizeConv(){convCanvas.width=W();convCanvas.height=H();}
 resizeConv();
-
 function drawConvLines(){
   convCtx.clearRect(0,0,W(),H());
   convCtx.setLineDash([4,7]);
-  convCtx.strokeStyle='rgba(196,146,26,0.15)';
-  convCtx.lineWidth=0.8;
-  // billboard sits roughly at 50% x, 33% y
-  const bx=W()*0.5, by=H()*0.33;
-  // lines from bottom corners toward billboard
-  convCtx.beginPath();
-  convCtx.moveTo(0,H());
-  convCtx.lineTo(bx-60,by+30);
-  convCtx.stroke();
-  convCtx.beginPath();
-  convCtx.moveTo(W(),H());
-  convCtx.lineTo(bx+60,by+30);
-  convCtx.stroke();
-  // rooftop edge lead-in curves
+  convCtx.strokeStyle='rgba(196,146,26,0.15)';convCtx.lineWidth=0.8;
+  const bx=W()*0.5,by=H()*0.33;
+  convCtx.beginPath();convCtx.moveTo(0,H());convCtx.lineTo(bx-60,by+30);convCtx.stroke();
+  convCtx.beginPath();convCtx.moveTo(W(),H());convCtx.lineTo(bx+60,by+30);convCtx.stroke();
   convCtx.setLineDash([3,5]);
-  convCtx.strokeStyle='rgba(46,94,30,0.25)';
-  convCtx.lineWidth=0.7;
-  convCtx.beginPath();
-  convCtx.moveTo(0,H()*0.88);
-  convCtx.quadraticCurveTo(W()*0.15,H()*0.76,W()*0.38,H()*0.65);
-  convCtx.stroke();
-  convCtx.beginPath();
-  convCtx.moveTo(W(),H()*0.88);
-  convCtx.quadraticCurveTo(W()*0.85,H()*0.76,W()*0.62,H()*0.65);
-  convCtx.stroke();
+  convCtx.strokeStyle='rgba(46,94,30,0.25)';convCtx.lineWidth=0.7;
+  convCtx.beginPath();convCtx.moveTo(0,H()*0.88);convCtx.quadraticCurveTo(W()*0.15,H()*0.76,W()*0.38,H()*0.65);convCtx.stroke();
+  convCtx.beginPath();convCtx.moveTo(W(),H()*0.88);convCtx.quadraticCurveTo(W()*0.85,H()*0.76,W()*0.62,H()*0.65);convCtx.stroke();
 }
 drawConvLines();
 
-/* ═══════════════════════════════════════════════
-   PARALLAX ENGINE
-═══════════════════════════════════════════════ */
-const layers = document.querySelectorAll('.p-layer[data-depth]');
-document.addEventListener('mousemove',e=>{
-  mx=e.clientX; my=e.clientY;
-});
+/* ── PARALLAX ── */
+const layers=document.querySelectorAll('.p-layer[data-depth]');
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
 function applyParallax(){
-  const dx=(mx/W()-0.5)*2;
-  const dy=(my/H()-0.5)*2;
+  const dx=(mx/W()-0.5)*2,dy=(my/H()-0.5)*2;
   layers.forEach(l=>{
     const d=parseFloat(l.dataset.depth)||0;
-    const tx=dx*d*-220;
-    const ty=dy*d*-80;
-    l.style.transform=`translate(${tx}px,${ty}px)`;
+    l.style.transform=`translate(${dx*d*-220}px,${dy*d*-80}px)`;
   });
   requestAnimationFrame(applyParallax);
 }
 applyParallax();
 
-/* ═══════════════════════════════════════════════
-   PARTICLE SYSTEM
-═══════════════════════════════════════════════ */
-const pCanvas = document.getElementById('particle-canvas');
-const pCtx = pCanvas.getContext('2d');
+/* ── PARTICLES ── */
+const pCanvas=document.getElementById('particle-canvas');
+const pCtx=pCanvas.getContext('2d');
 function resizeP(){pCanvas.width=W();pCanvas.height=H();}
 resizeP();
-
-// wind particles
-const wind = Array.from({length:25},()=>({
-  x:Math.random(),y:Math.random(),
-  vx:0.0004+Math.random()*0.0008,
-  vy:(Math.random()-0.5)*0.0002,
-  phase:Math.random()*Math.PI*2,
-  a:0.08+Math.random()*0.14,
-  r:0.6+Math.random()*0.9
-}));
-
-// leaf particles pool
-const leaves = [];
+const wind=Array.from({length:25},()=>({x:Math.random(),y:Math.random(),vx:0.0004+Math.random()*0.0008,vy:(Math.random()-0.5)*0.0002,phase:Math.random()*Math.PI*2,a:0.08+Math.random()*0.14,r:0.6+Math.random()*0.9}));
+const leaves=[];
 const LEAF_COLORS=['#2a5a18','#245014','#224c16','#7a5a20','#6a4e1a','#3a6018'];
 function spawnLeaves(cx,cy,count=4){
   for(let i=0;i<count;i++){
-    const ang=(Math.random()-0.5)*Math.PI;
-    const spd=1.5+Math.random()*2.5;
-    leaves.push({
-      x:cx+( Math.random()-0.5)*60,
-      y:cy+( Math.random()-0.5)*40,
-      vx:Math.cos(ang)*spd,
-      vy:-Math.random()*2-1,
-      rot:Math.random()*Math.PI*2,
-      rotV:(Math.random()-0.5)*0.18,
-      life:1,decay:0.006+Math.random()*0.006,
-      w:8+Math.random()*10,h:5+Math.random()*6,
-      color:LEAF_COLORS[Math.floor(Math.random()*LEAF_COLORS.length)]
-    });
+    const ang=(Math.random()-0.5)*Math.PI,spd=1.5+Math.random()*2.5;
+    leaves.push({x:cx+(Math.random()-0.5)*60,y:cy+(Math.random()-0.5)*40,vx:Math.cos(ang)*spd,vy:-Math.random()*2-1,rot:Math.random()*Math.PI*2,rotV:(Math.random()-0.5)*0.18,life:1,decay:0.006+Math.random()*0.006,w:8+Math.random()*10,h:5+Math.random()*6,color:LEAF_COLORS[Math.floor(Math.random()*LEAF_COLORS.length)]});
   }
 }
-
-// foliage proximity
-const foliageZones = document.querySelectorAll('.foliage-zone');
+const foliageZones=document.querySelectorAll('.foliage-zone');
 let lastLeafSpawn=0;
 function checkFoliageProx(t){
-  if(t-lastLeafSpawn<400) return;
+  if(t-lastLeafSpawn<400)return;
   foliageZones.forEach(z=>{
-    const cx=parseFloat(z.dataset.cx)*W()/1600;
-    const cy=parseFloat(z.dataset.cy)*H()/900;
-    const dist=Math.hypot(mx-cx,my-cy);
-    if(dist<140){
-      spawnLeaves(cx,cy,3);
-      lastLeafSpawn=t;
-    }
+    const cx=parseFloat(z.dataset.cx)*W()/1600,cy=parseFloat(z.dataset.cy)*H()/900;
+    if(Math.hypot(mx-cx,my-cy)<140){spawnLeaves(cx,cy,3);lastLeafSpawn=t;}
   });
 }
-
 function drawParticles(t){
   pCtx.clearRect(0,0,W(),H());
-
-  // wind
   wind.forEach(w=>{
-    w.x+=w.vx; w.y+=w.vy+Math.sin(t*0.0004+w.phase)*0.0001;
-    if(w.x>1.05) w.x=-0.05;
-    if(w.y<0)    w.y=1;
-    if(w.y>1)    w.y=0;
-    pCtx.beginPath();
-    pCtx.arc(w.x*W(),w.y*H(),w.r,0,Math.PI*2);
-    pCtx.fillStyle=`rgba(180,210,160,${w.a})`;
-    pCtx.fill();
+    w.x+=w.vx;w.y+=w.vy+Math.sin(t*0.0004+w.phase)*0.0001;
+    if(w.x>1.05)w.x=-0.05;if(w.y<0)w.y=1;if(w.y>1)w.y=0;
+    pCtx.beginPath();pCtx.arc(w.x*W(),w.y*H(),w.r,0,Math.PI*2);
+    pCtx.fillStyle=`rgba(180,210,160,${w.a})`;pCtx.fill();
   });
-
-  // leaves
   for(let i=leaves.length-1;i>=0;i--){
-    const l=leaves[i];
-    l.x+=l.vx; l.y+=l.vy;
-    l.vy+=0.05; l.vx*=0.99;
-    l.rot+=l.rotV; l.life-=l.decay;
+    const l=leaves[i];l.x+=l.vx;l.y+=l.vy;l.vy+=0.05;l.vx*=0.99;l.rot+=l.rotV;l.life-=l.decay;
     if(l.life<=0){leaves.splice(i,1);continue;}
-    pCtx.save();
-    pCtx.translate(l.x,l.y);
-    pCtx.rotate(l.rot);
-    pCtx.globalAlpha=l.life;
-    pCtx.fillStyle=l.color;
-    pCtx.beginPath();
-    pCtx.ellipse(0,0,l.w/2,l.h/2,0,0,Math.PI*2);
-    pCtx.fill();
-    // leaf vein
-    pCtx.strokeStyle='rgba(0,0,0,0.2)';
-    pCtx.lineWidth=0.5;
-    pCtx.beginPath();
-    pCtx.moveTo(-l.w/2,0);pCtx.lineTo(l.w/2,0);
-    pCtx.stroke();
+    pCtx.save();pCtx.translate(l.x,l.y);pCtx.rotate(l.rot);pCtx.globalAlpha=l.life;
+    pCtx.fillStyle=l.color;pCtx.beginPath();pCtx.ellipse(0,0,l.w/2,l.h/2,0,0,Math.PI*2);pCtx.fill();
+    pCtx.strokeStyle='rgba(0,0,0,0.2)';pCtx.lineWidth=0.5;pCtx.beginPath();pCtx.moveTo(-l.w/2,0);pCtx.lineTo(l.w/2,0);pCtx.stroke();
     pCtx.restore();
   }
 }
-
-/* ═══════════════════════════════════════════════
-   REC TIMER
-═══════════════════════════════════════════════ */
-let startTime = Date.now();
-function updateTimer(){
-  const s=Math.floor((Date.now()-startTime)/1000);
-  const mm=String(Math.floor(s/60)).padStart(2,'0');
-  const ss=String(s%60).padStart(2,'0');
-  const el=document.getElementById('rec-timer');
-  if(el) el.textContent=`${mm}:${ss}`;
-}
-
-/* ═══════════════════════════════════════════════
-   MAIN LOOP
-═══════════════════════════════════════════════ */
-function loop(t){
-  checkFoliageProx(t);
-  drawParticles(t);
-  updateTimer();
-  requestAnimationFrame(loop);
-}
+function loop(t){checkFoliageProx(t);drawParticles(t);requestAnimationFrame(loop);}
 requestAnimationFrame(loop);
 
-/* ═══════════════════════════════════════════════
-   CCTV STATIC TRANSITION
-═══════════════════════════════════════════════ */
-const cctvOverlay = document.getElementById('cctv-overlay');
-const cctvCanvas  = document.getElementById('cctv-canvas');
-const cctvCtx     = cctvCanvas.getContext('2d');
-const cctvStamp   = document.getElementById('cctv-stamp');
-
-function resizeCctv(){
-  cctvCanvas.width  = W();
-  cctvCanvas.height = H();
-}
-resizeCctv();
-window.addEventListener('resize', resizeCctv);
-
-const CHANNEL_NAMES = [
-  'CAM-01 · HERO · ROOFTOP',
-  'CAM-02 · ENV SYSTEMS · SECTOR 4',
-  'CAM-03 · MODEL VAULT · LEVEL B',
-  'CAM-04 · ART LAB · WING C',
-  'CAM-05 · ARCHIVE · ABOUT'
-];
-
-let cctvAnim = null;
-
-function drawStatic(intensity){
-  const w = cctvCanvas.width, h = cctvCanvas.height;
-  const img = cctvCtx.createImageData(w, h);
-  const d = img.data;
-  for(let i=0;i<d.length;i+=4){
-    const v = Math.random() < intensity ? Math.floor(Math.random()*80+10) : 0;
-    d[i]=v*0.6; d[i+1]=v*0.9; d[i+2]=v*0.5; d[i+3]=v*2.5;
-  }
-  // scanline bands
-  const bandH = Math.floor(h * (0.05 + Math.random()*0.12));
-  const bandY = Math.floor(Math.random()*(h-bandH));
-  for(let y=bandY;y<bandY+bandH;y++){
-    for(let x=0;x<w;x++){
-      const i=(y*w+x)*4;
-      d[i]=40;d[i+1]=70;d[i+2]=30;d[i+3]=180;
-    }
-  }
-  // horizontal tear line
-  const tearY = Math.floor(Math.random()*h);
-  for(let x=0;x<w;x++){
-    const i=(tearY*w+x)*4;
-    d[i]=80;d[i+1]=140;d[i+2]=60;d[i+3]=220;
-  }
-  cctvCtx.putImageData(img,0,0);
-}
-
-function cctvCut(nextIdx, callback){
-  if(cctvAnim) cancelAnimationFrame(cctvAnim);
-  cctvOverlay.style.opacity='1';
-  cctvStamp.style.opacity='0';
-
-  const FRAMES = [0.9, 0.95, 1.0, 0.85, 0.6, 0.3, 0.1, 0];
-  let frame = 0;
-
-  // show channel stamp at peak
-  setTimeout(()=>{
-    cctvStamp.textContent = CHANNEL_NAMES[nextIdx] || 'CAM-00';
-    cctvStamp.style.transition='opacity 0.04s';
-    cctvStamp.style.opacity='1';
-    setTimeout(()=>{cctvStamp.style.opacity='0';},160);
-  }, 60);
-
-  function tick(){
-    if(frame < FRAMES.length){
-      const intensity = FRAMES[frame];
-      if(intensity > 0){
-        drawStatic(intensity);
-        cctvOverlay.style.opacity = String(Math.min(intensity + 0.1, 1));
-      } else {
-        cctvCtx.clearRect(0,0,cctvCanvas.width,cctvCanvas.height);
-        cctvOverlay.style.opacity='0';
-      }
-      frame++;
-      // vary timing: fast static, then clean
-      const delay = frame < 4 ? 28 : frame < 6 ? 40 : 60;
-      cctvAnim = setTimeout(tick, delay);
-    } else {
-      cctvOverlay.style.opacity='0';
-      if(callback) callback();
-    }
-  }
-
-  // first frame immediate, then swap section halfway
-  tick();
-  setTimeout(callback, 80);
-}
-
-/* ═══════════════════════════════════════════════
-   SECTION NAVIGATION
-═══════════════════════════════════════════════ */
-const sectionEls = [
-  document.getElementById('hero'),
-  document.getElementById('sec-systems'),
-  document.getElementById('sec-models'),
-  document.getElementById('sec-art'),
-  document.getElementById('sec-about')
-];
-
-const NAV_LINK_IDS = [
-  {iso:'ISO 800', f:'F/2.8', mode:'EXPLORE',    lbl:'Hero · Rooftop',      sub:'F/2.8 · AF-S · ISO 800'},
-  {iso:'ISO 3200',f:'F/4.0', mode:'SCAN: ENV',   lbl:'Systems · Forest',    sub:'F/4.0 · MF · ISO 3200'},
-  {iso:'ISO 1600',f:'F/5.6', mode:'CAPTURE',     lbl:'Models · Workshop',   sub:'F/5.6 · AF-C · ISO 1600'},
-  {iso:'ISO 400', f:'F/1.4', mode:'COMPOSE',     lbl:'Art · Studio',        sub:'F/1.4 · AF-S · ISO 400'},
-  {iso:'ISO 100', f:'F/8.0', mode:'REFLECT',     lbl:'About · Contact',     sub:'F/8.0 · MF · ISO 100'}
-];
-
-function goToSection(idx){
-  if(idx===currentSection) return;
-
-  cctvCut(idx, ()=>{
-    sectionEls[currentSection].classList.remove('active');
-    sectionEls[currentSection].classList.add('left');
-    sectionEls[idx].classList.remove('left','right');
-    sectionEls[idx].classList.add('active');
-    currentSection = idx;
-    updateNavUI();
-  });
-}
-
-function updateNavUI(){
-  const d = NAV_LINK_IDS[currentSection];
-  document.getElementById('r-iso').textContent = d.iso;
-  document.getElementById('r-f').textContent   = d.f;
-  document.getElementById('nav-mode-pill').textContent = 'MODE: '+d.mode;
-  document.querySelector('#section-label .sl-main').textContent = d.lbl;
-  document.querySelector('#section-label .sl-sub').textContent  = d.sub;
-
-  // highlight nav items — home item is index 0, sections are 1-4
-  document.querySelectorAll('.nav-item').forEach(el=>{
-    const t = el.dataset.target;
-    const isActive = (t === 'home' && currentSection === 0) ||
-                     (t !== 'home' && parseInt(t) === currentSection);
-    el.classList.toggle('active-nav', isActive);
-  });
-}
-
-// nav click handlers — home row goes to 0, section rows go to 1-4
-document.querySelectorAll('.nav-item').forEach(el=>{
-  el.addEventListener('click',()=>{
-    const t = el.dataset.target;
-    goToSection(t === 'home' ? 0 : parseInt(t));
-  });
-});
-// logo also goes home
-document.getElementById('logo').addEventListener('click',()=>goToSection(0));
-
-/* ═══════════════════════════════════════════════
-   KEYBOARD NAVIGATION
-═══════════════════════════════════════════════ */
-document.addEventListener('keydown',e=>{
-  if(e.key==='ArrowRight'||e.key==='ArrowDown'){
-    goToSection(Math.min(currentSection+1,SECTIONS.length-1));
-  }
-  if(e.key==='ArrowLeft'||e.key==='ArrowUp'){
-    goToSection(Math.max(currentSection-1,0));
-  }
-});
-
-/* ═══════════════════════════════════════════════
-   RESIZE HANDLER
-═══════════════════════════════════════════════ */
-window.addEventListener('resize',()=>{
-  resizeSky(); resizeConv(); resizeP();
-  drawSky(); drawConvLines();
-});
+window.addEventListener('resize',()=>{resizeSky();resizeConv();resizeP();drawSky();drawConvLines();});
 </script>
 </body>
 </html>
