@@ -1,437 +1,751 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Ashor Dev · World Builder</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="shared.css"/>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ENV_ARCHITECT // OS</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;900&amp;family=Inter:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <style>
-/* ── HERO-SPECIFIC ─────────────────────────────── */
-#hero{background:var(--green-900);position:absolute;inset:0;}
-
-#scene-zoom{
-  position:absolute;inset:0;
-  transform:scale(1.12);
-  transform-origin:center 60%;
-}
-.p-layer{
-  position:absolute;
-  top:0;left:-8%;
-  width:116%;height:100%;
-  will-change:transform;
-  transition:transform 0.06s linear;
-  pointer-events:none;
-}
-#layer-sky     {left:0;width:100%;z-index:1;}
-#layer-city    {z-index:2;}
-#layer-buildings{z-index:3;}
-#layer-billboard{z-index:4;}
-#layer-rooftop {z-index:5;}
-#layer-fg      {z-index:6;}
-#sky-canvas{position:absolute;inset:0;width:100%;height:100%;}
-
-#hud{position:absolute;inset:0;z-index:20;pointer-events:none;}
-#hud canvas{position:absolute;inset:0;width:100%;height:100%;}
-.rot-line{position:absolute;background:rgba(46,94,48,0.12);pointer-events:none;}
-.rot-h{left:0;right:0;height:1px;}
-.rot-v{top:0;bottom:0;width:1px;}
-#rl1{top:33.33%;}#rl2{top:66.66%;}#rv1{left:33.33%;}#rv2{left:66.66%;}
-#conv-canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;}
-
-#particle-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:15;pointer-events:none;}
-
-.layer-svg{position:absolute;bottom:0;left:0;width:100%;height:100%;overflow:visible;}
-
-#enter-hint{
-  position:fixed;bottom:88px;left:50%;
-  transform:translateX(-50%);
-  z-index:100;pointer-events:none;
-  display:flex;flex-direction:column;align-items:center;
-  gap:5px;
-  opacity:0;animation:fadeIn 0.8s ease 2.4s forwards;
-}
-#enter-hint span{
-  font-size:8px;letter-spacing:.18em;
-  color:var(--text-hud-dim);text-transform:uppercase;
-  font-style:italic;
-  font-family:'Crimson Pro',serif;
-}
-#enter-hint-dot{
-  width:4px;height:4px;border-radius:50%;
-  background:var(--green-500);
-  animation:pulse 2.5s ease-in-out infinite;
-}
-</style>
+        :root {
+            --bg-deep: #050C0A;
+            --emerald-primary: #10B981;
+            --gold-accent: #FBBF24;
+        }
+        body {
+            background-color: var(--bg-deep);
+            color: #D1D5DB;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+        }
+        .scanning-grid {
+            background-size: 32px 32px;
+            background-image: linear-gradient(to right, rgba(16, 185, 129, 0.03) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(16, 185, 129, 0.03) 1px, transparent 1px);
+        }
+        .hud-bracket-tl { border-top: 2px solid var(--emerald-primary); border-left: 2px solid var(--emerald-primary); width: 20px; height: 20px; position: absolute; top: 0; left: 0; }
+        .hud-bracket-tr { border-top: 2px solid var(--emerald-primary); border-right: 2px solid var(--emerald-primary); width: 20px; height: 20px; position: absolute; top: 0; right: 0; }
+        .hud-bracket-bl { border-bottom: 2px solid var(--emerald-primary); border-left: 2px solid var(--emerald-primary); width: 20px; height: 20px; position: absolute; bottom: 0; left: 0; }
+        .hud-bracket-br { border-bottom: 2px solid var(--emerald-primary); border-right: 2px solid var(--emerald-primary); width: 20px; height: 20px; position: absolute; bottom: 0; right: 0; }
+        
+        .technical-readout {
+            font-family: 'Space Grotesk', monospace;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+        .glow-emerald {
+            text-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+        }
+        .glow-gold {
+            text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+        }
+    html { scroll-behavior: smooth; }
+        .discord-status-online  { background-color: #3BA55C; }
+        .discord-status-idle    { background-color: #FAA61A; }
+        .discord-status-dnd     { background-color: #ED4245; }
+        .discord-status-offline { background-color: #747F8D; }
+        #discord-activity-bar {
+            transition: opacity 0.4s ease;
+        }
+    </style>
 </head>
-<body>
-<div id="site">
-
-  <!-- CCTV overlay (managed by nav.js) -->
-  <div id="cctv-overlay"><canvas id="cctv-canvas"></canvas></div>
-  <div id="cctv-stamp"></div>
-
-  <!-- corner brackets -->
-  <div class="bracket tl"></div><div class="bracket tr"></div>
-  <div class="bracket bl"></div><div class="bracket br"></div>
-
-  <!-- logo -->
-  <a id="logo" href="index.html"><span>AD · ENV</span></a>
-
-  <!-- nav -->
-  <nav id="nav-bar"></nav>
-
-  <!-- rec + section label -->
-  <div id="rec">
-    <div id="rec-dot"></div>
-    <span id="rec-text">REC · <span id="rec-timer">00:00</span></span>
-  </div>
-  <div id="section-label">
-    <div class="sl-main">Hero · Rooftop</div>
-    <div class="sl-sub">F/2.8 · AF-S · ISO 800</div>
-  </div>
-
-  <!-- enter hint -->
-  <div id="enter-hint">
-    <span>explore the world</span>
-    <div id="enter-hint-dot"></div>
-  </div>
-
-  <!-- ── HERO SCENE ── -->
-  <div id="hero">
-    <div id="scene-zoom">
-
-      <!-- sky -->
-      <div class="p-layer" id="layer-sky" data-depth="0">
-        <canvas id="sky-canvas"></canvas>
-      </div>
-
-      <!-- distant city -->
-      <div class="p-layer" id="layer-city" data-depth="0.02">
-        <svg class="layer-svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax meet" xmlns="http://www.w3.org/2000/svg">
-          <g fill="#0c1a0c" opacity="0.7">
-            <rect x="0" y="500" width="60" height="400"/><rect x="40" y="440" width="40" height="460"/>
-            <rect x="100" y="520" width="80" height="380"/><rect x="160" y="460" width="50" height="440"/>
-            <rect x="190" y="400" width="30" height="500"/><rect x="240" y="480" width="70" height="420"/>
-            <rect x="290" y="430" width="45" height="470"/><rect x="320" y="380" width="35" height="520"/>
-            <rect x="380" y="500" width="90" height="400"/><rect x="450" y="440" width="55" height="460"/>
-            <rect x="490" y="410" width="30" height="490"/><rect x="540" y="470" width="75" height="430"/>
-            <rect x="600" y="420" width="50" height="480"/><rect x="630" y="380" width="40" height="520"/>
-            <rect x="700" y="460" width="85" height="440"/><rect x="760" y="410" width="55" height="490"/>
-            <rect x="800" y="370" width="40" height="530"/><rect x="860" y="490" width="70" height="410"/>
-            <rect x="910" y="440" width="45" height="460"/><rect x="940" y="400" width="30" height="500"/>
-            <rect x="990" y="470" width="80" height="430"/><rect x="1050" y="430" width="50" height="470"/>
-            <rect x="1080" y="390" width="35" height="510"/><rect x="1140" y="510" width="75" height="390"/>
-            <rect x="1190" y="450" width="55" height="450"/><rect x="1230" y="400" width="40" height="500"/>
-            <rect x="1290" y="480" width="80" height="420"/><rect x="1350" y="430" width="60" height="470"/>
-            <rect x="1390" y="380" width="45" height="520"/><rect x="1450" y="500" width="70" height="400"/>
-            <rect x="1500" y="440" width="50" height="460"/><rect x="1540" y="390" width="60" height="510"/>
-          </g>
-        </svg>
-      </div>
-
-      <!-- background buildings with vines -->
-      <div class="p-layer" id="layer-buildings" data-depth="0.06">
-        <svg class="layer-svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax meet" xmlns="http://www.w3.org/2000/svg">
-          <g fill="#0d1d0d">
-            <rect x="80" y="280" width="180" height="620"/>
-            <rect x="90" y="295" width="30" height="45" fill="#0f220f"/><rect x="130" y="295" width="30" height="45" fill="#0f220f"/>
-            <rect x="170" y="295" width="30" height="45" fill="#0f220f"/><rect x="90" y="360" width="30" height="45" fill="#0e200e"/>
-            <rect x="130" y="360" width="30" height="45" fill="#0e200e"/><rect x="170" y="360" width="30" height="45" fill="#0e200e"/>
-            <rect x="90" y="425" width="30" height="45" fill="#0e1e0e"/><rect x="130" y="425" width="30" height="45" fill="#0e1e0e"/>
-            <rect x="170" y="425" width="30" height="45" fill="#0e1e0e"/>
-          </g>
-          <path d="M100 280 Q95 320 102 360 Q98 400 105 450 Q100 500 108 560" stroke="#1a3a10" stroke-width="2" fill="none" opacity="0.7"/>
-          <path d="M140 280 Q145 330 138 380 Q142 430 136 480" stroke="#1a3a10" stroke-width="1.5" fill="none" opacity="0.5"/>
-          <ellipse cx="103" cy="340" rx="8" ry="5" fill="#1e4012" opacity="0.6"/>
-          <ellipse cx="140" cy="310" rx="6" ry="4" fill="#1e4012" opacity="0.5"/>
-          <ellipse cx="107" cy="420" rx="7" ry="4" fill="#1a3a10" opacity="0.6"/>
-          <g fill="#0c1c0c">
-            <rect x="320" y="220" width="220" height="680"/>
-            <rect x="335" y="238" width="35" height="50" fill="#10230f"/><rect x="380" y="238" width="35" height="50" fill="#10230f"/>
-            <rect x="425" y="238" width="35" height="50" fill="#10230f"/><rect x="470" y="238" width="35" height="50" fill="#10230f"/>
-            <rect x="335" y="310" width="35" height="50" fill="#0f210f"/><rect x="380" y="310" width="35" height="50" fill="#0f210f"/>
-            <rect x="425" y="310" width="35" height="50" fill="#0f210f"/><rect x="470" y="310" width="35" height="50" fill="#0f210f"/>
-            <rect x="335" y="382" width="35" height="50" fill="#0e1f0e"/><rect x="380" y="382" width="35" height="50" fill="#0e1f0e"/>
-            <rect x="425" y="382" width="35" height="50" fill="#0e1f0e"/><rect x="470" y="382" width="35" height="50" fill="#0e1f0e"/>
-          </g>
-          <line x1="380" y1="220" x2="380" y2="120" stroke="#162816" stroke-width="3"/>
-          <line x1="380" y1="140" x2="480" y2="140" stroke="#162816" stroke-width="2"/>
-          <line x1="380" y1="140" x2="310" y2="180" stroke="#162816" stroke-width="1.5"/>
-          <path d="M350 220 Q346 270 354 330 Q348 390 356 460 Q350 530 360 600" stroke="#1c3e12" stroke-width="2.5" fill="none" opacity="0.8"/>
-          <ellipse cx="354" cy="290" rx="10" ry="6" fill="#204514" opacity="0.7"/>
-          <ellipse cx="352" cy="380" rx="9" ry="5" fill="#1c3e12" opacity="0.6"/>
-          <g fill="#0b1b0c">
-            <rect x="1160" y="260" width="200" height="640"/>
-            <rect x="1175" y="278" width="30" height="44" fill="#0e2010"/><rect x="1215" y="278" width="30" height="44" fill="#0e2010"/>
-            <rect x="1255" y="278" width="30" height="44" fill="#0e2010"/><rect x="1295" y="278" width="30" height="44" fill="#0e2010"/>
-            <rect x="1175" y="344" width="30" height="44" fill="#0d1f0f"/><rect x="1215" y="344" width="30" height="44" fill="#0d1f0f"/>
-            <rect x="1255" y="344" width="30" height="44" fill="#0d1f0f"/><rect x="1295" y="344" width="30" height="44" fill="#0d1f0f"/>
-          </g>
-          <path d="M1200 260 Q1196 310 1204 370 Q1198 430 1206 500" stroke="#1a3a10" stroke-width="2" fill="none" opacity="0.7"/>
-          <ellipse cx="1202" cy="330" rx="9" ry="5" fill="#1e4012" opacity="0.6"/>
-          <g fill="#0c1a0b">
-            <rect x="1420" y="300" width="160" height="600"/>
-            <rect x="1435" y="318" width="28" height="40" fill="#0f2010"/><rect x="1473" y="318" width="28" height="40" fill="#0f2010"/>
-            <rect x="1511" y="318" width="28" height="40" fill="#0f2010"/><rect x="1549" y="318" width="28" height="40" fill="#0f2010"/>
-          </g>
-        </svg>
-      </div>
-
-      <!-- billboard -->
-      <div class="p-layer" id="layer-billboard" data-depth="0.12">
-        <svg class="layer-svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax meet" xmlns="http://www.w3.org/2000/svg">
-          <rect x="784" y="360" width="32" height="260" fill="#0e1e0e"/>
-          <rect x="786" y="362" width="4" height="258" fill="#162816" opacity="0.5"/>
-          <rect x="490" y="120" width="620" height="260" rx="4" fill="#0c1c0c" stroke="#1e3e1a" stroke-width="3"/>
-          <rect x="498" y="128" width="604" height="244" rx="2" fill="#0a180a" stroke="#162816" stroke-width="1"/>
-          <rect x="502" y="132" width="596" height="236" rx="2" fill="#120e02" style="animation:billboardGlow 6s ease-in-out infinite;"/>
-          <rect x="506" y="136" width="588" height="228" rx="1" fill="#0f0c02" opacity="0.9"/>
-          <g style="animation:billboardGlitch 2.2s ease-out 0.3s both;">
-            <text x="800" y="228" text-anchor="middle" font-family="'Cinzel',serif" font-weight="700" font-size="64" fill="#d4a830" letter-spacing="8">Ashor Dev</text>
-            <text x="800" y="258" text-anchor="middle" font-family="'Space Mono',monospace" font-size="11" fill="#7a6020" letter-spacing="4">WORLD BUILDER · ENV SYSTEMS · GAME DEV</text>
-          </g>
-          <rect x="506" y="136" width="588" height="228" fill="none" stroke="#c4921a" stroke-width="0.5" opacity="0.15"/>
-          <g stroke="#c4921a" stroke-width="0.3" opacity="0.06">
-            <line x1="506" y1="148" x2="1094" y2="148"/><line x1="506" y1="160" x2="1094" y2="160"/>
-            <line x1="506" y1="172" x2="1094" y2="172"/><line x1="506" y1="184" x2="1094" y2="184"/>
-            <line x1="506" y1="196" x2="1094" y2="196"/><line x1="506" y1="208" x2="1094" y2="208"/>
-            <line x1="506" y1="220" x2="1094" y2="220"/><line x1="506" y1="232" x2="1094" y2="232"/>
-            <line x1="506" y1="244" x2="1094" y2="244"/><line x1="506" y1="256" x2="1094" y2="256"/>
-            <line x1="506" y1="268" x2="1094" y2="268"/><line x1="506" y1="280" x2="1094" y2="280"/>
-            <line x1="506" y1="292" x2="1094" y2="292"/><line x1="506" y1="304" x2="1094" y2="304"/>
-            <line x1="506" y1="316" x2="1094" y2="316"/><line x1="506" y1="328" x2="1094" y2="328"/>
-            <line x1="506" y1="340" x2="1094" y2="340"/><line x1="506" y1="352" x2="1094" y2="352"/>
-          </g>
-          <g stroke="#c4921a" stroke-width="1.2" fill="none" opacity="0.55">
-            <path d="M494 114 L494 126 M494 114 L508 114"/><path d="M1106 114 L1106 126 M1106 114 L1092 114"/>
-            <path d="M494 386 L494 374 M494 386 L508 386"/><path d="M1106 386 L1106 374 M1106 386 L1092 386"/>
-          </g>
-          <g stroke="#c4921a" stroke-width="0.8" fill="none" opacity="0.4">
-            <line x1="790" y1="240" x2="770" y2="240"/><line x1="810" y1="240" x2="830" y2="240"/>
-            <line x1="800" y1="230" x2="800" y2="212"/><line x1="800" y1="250" x2="800" y2="268"/>
-            <circle cx="800" cy="240" r="5" fill="none"/>
-          </g>
-          <path d="M490 200 Q484 230 488 270 Q482 310 486 350 Q490 380 490 380" stroke="#1e4014" stroke-width="2.5" fill="none"/>
-          <ellipse cx="487" cy="240" rx="10" ry="6" fill="#224816" opacity="0.8"/>
-          <ellipse cx="489" cy="300" rx="8" ry="5" fill="#1e4214" opacity="0.7"/>
-          <ellipse cx="486" cy="355" rx="9" ry="5" fill="#1c3e12" opacity="0.6"/>
-          <path d="M1110 180 Q1116 220 1112 260 Q1118 300 1114 350" stroke="#1e4014" stroke-width="2" fill="none"/>
-          <ellipse cx="1113" cy="230" rx="8" ry="5" fill="#214616" opacity="0.7"/>
-          <ellipse cx="1115" cy="310" rx="7" ry="4" fill="#1e4212" opacity="0.6"/>
-        </svg>
-      </div>
-
-      <!-- rooftop + avatar -->
-      <div class="p-layer" id="layer-rooftop" data-depth="0.20">
-        <svg class="layer-svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax meet" xmlns="http://www.w3.org/2000/svg">
-          <rect x="300" y="500" width="1000" height="400" fill="#0b1b0c"/>
-          <rect x="280" y="488" width="1040" height="28" fill="#112011" rx="2"/>
-          <rect x="278" y="510" width="1044" height="8" fill="#0f1e0f"/>
-          <g fill="#0d1d0d" stroke="#162816" stroke-width="0.5">
-            <rect x="340" y="450" width="80" height="55" rx="2"/>
-            <rect x="350" y="442" width="60" height="14" rx="1"/>
-            <rect x="355" y="460" width="8" height="30" fill="#121f12"/>
-            <rect x="372" y="460" width="8" height="30" fill="#121f12"/>
-            <rect x="389" y="460" width="8" height="30" fill="#121f12"/>
-          </g>
-          <g fill="#0d1d0d" stroke="#162816" stroke-width="0.5">
-            <rect x="1180" y="448" width="90" height="50" rx="2"/>
-            <rect x="1195" y="440" width="60" height="13" rx="1"/>
-          </g>
-          <rect x="1260" y="360" width="14" height="130" fill="#0c1c0c"/>
-          <rect x="1268" y="360" width="14" height="130" fill="#0c1c0c"/>
-          <ellipse cx="1268" cy="362" rx="36" ry="12" fill="#0f200f"/>
-          <rect x="1232" y="360" width="72" height="80" rx="3" fill="#0e1e0e"/>
-          <ellipse cx="1268" cy="440" rx="36" ry="10" fill="#0c1a0c"/>
-          <path d="M 420 488 Q 420 470 440 465 L 560 465 Q 580 465 580 450 L 580 440" stroke="#112211" stroke-width="6" fill="none" stroke-linecap="round"/>
-          <path d="M 1100 488 Q 1100 470 1080 465 L 980 465 Q 960 465 960 450" stroke="#112211" stroke-width="5" fill="none" stroke-linecap="round"/>
-          <g id="avatar" transform="translate(760, 430)">
-            <rect x="-12" y="50" width="10" height="40" rx="5" fill="#1a2e1a"/>
-            <rect x="2" y="50" width="10" height="40" rx="5" fill="#1a2e1a"/>
-            <ellipse cx="-7" cy="92" rx="8" ry="5" fill="#111e11"/>
-            <ellipse cx="7" cy="92" rx="8" ry="5" fill="#111e11"/>
-            <rect x="-18" y="12" width="36" height="42" rx="6" fill="#182818"/>
-            <path d="M-18 18 Q-14 12 0 10 Q14 12 18 18" fill="#1e3a1e" stroke="none"/>
-            <rect x="-26" y="20" width="12" height="28" rx="5" fill="#182818"/>
-            <rect x="14" y="20" width="12" height="28" rx="5" fill="#182818"/>
-            <ellipse cx="0" cy="4" rx="14" ry="15" fill="#1e3a1e"/>
-            <ellipse cx="0" cy="6" rx="10" ry="10" fill="#162e16"/>
-            <rect x="-16" y="8" width="6" height="10" rx="3" fill="#1a3018"/>
-            <rect x="10" y="8" width="6" height="10" rx="3" fill="#1a3018"/>
-          </g>
-        </svg>
-      </div>
-
-      <!-- foreground bushes -->
-      <div class="p-layer" id="layer-fg" data-depth="0.30">
-        <svg class="layer-svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax meet" xmlns="http://www.w3.org/2000/svg">
-          <g class="foliage-zone" data-cx="200" data-cy="780">
-            <ellipse cx="80" cy="820" rx="90" ry="55" fill="#132813"/>
-            <ellipse cx="160" cy="800" rx="80" ry="50" fill="#163016"/>
-            <ellipse cx="240" cy="830" rx="70" ry="45" fill="#112611"/>
-            <ellipse cx="130" cy="780" rx="60" ry="40" fill="#183018"/>
-            <ellipse cx="60" cy="790" rx="50" ry="35" fill="#142a14"/>
-            <ellipse cx="200" cy="810" rx="55" ry="38" fill="#163216"/>
-            <path d="M50 730 Q45 760 50 790 Q46 820 52 850" stroke="#1e4214" stroke-width="2" fill="none"/>
-            <path d="M120 720 Q125 755 118 785 Q123 815 116 850" stroke="#1a3c12" stroke-width="1.5" fill="none"/>
-            <path d="M190 715 Q186 748 192 778 Q188 808 194 840" stroke="#1e4014" stroke-width="1.5" fill="none"/>
-            <ellipse cx="50" cy="760" rx="8" ry="5" fill="#224a18" transform="rotate(-20,50,760)"/>
-            <ellipse cx="120" cy="745" rx="7" ry="4" fill="#204616" transform="rotate(15,120,745)"/>
-            <ellipse cx="192" cy="738" rx="7" ry="4" fill="#224a16" transform="rotate(-10,192,738)"/>
-            <ellipse cx="51" cy="800" rx="6" ry="4" fill="#1e4214" transform="rotate(25,51,800)"/>
-            <ellipse cx="117" cy="795" rx="6" ry="3" fill="#1c3e12" transform="rotate(-15,117,795)"/>
-          </g>
-          <g class="foliage-zone" data-cx="1400" data-cy="780">
-            <ellipse cx="1520" cy="820" rx="90" ry="55" fill="#122712"/>
-            <ellipse cx="1440" cy="800" rx="80" ry="50" fill="#153015"/>
-            <ellipse cx="1360" cy="830" rx="70" ry="45" fill="#112511"/>
-            <ellipse cx="1470" cy="780" rx="60" ry="40" fill="#173117"/>
-            <ellipse cx="1540" cy="795" rx="50" ry="35" fill="#132913"/>
-            <ellipse cx="1400" cy="812" rx="55" ry="38" fill="#153215"/>
-            <path d="M1550 725 Q1555 758 1549 790 Q1554 820 1548 850" stroke="#1e4214" stroke-width="2" fill="none"/>
-            <path d="M1480 718 Q1475 752 1482 784 Q1477 815 1484 848" stroke="#1a3c12" stroke-width="1.5" fill="none"/>
-            <path d="M1410 715 Q1414 748 1408 778 Q1412 808 1406 840" stroke="#1c3e12" stroke-width="1.5" fill="none"/>
-            <ellipse cx="1549" cy="758" rx="8" ry="5" fill="#224a18" transform="rotate(20,1549,758)"/>
-            <ellipse cx="1480" cy="742" rx="7" ry="4" fill="#1e4616" transform="rotate(-15,1480,742)"/>
-            <ellipse cx="1408" cy="736" rx="7" ry="4" fill="#224a16" transform="rotate(10,1408,736)"/>
-          </g>
-          <ellipse cx="800" cy="900" rx="500" ry="60" fill="#0e200e" opacity="0.8"/>
-          <ellipse cx="800" cy="895" rx="380" ry="40" fill="#112411" opacity="0.6"/>
-          <g fill="#1a3a16" opacity="0.9">
-            <ellipse cx="650" cy="870" rx="35" ry="22"/>
-            <ellipse cx="700" cy="860" rx="28" ry="18"/>
-            <ellipse cx="900" cy="868" rx="32" ry="20"/>
-            <ellipse cx="950" cy="858" rx="26" ry="16"/>
-          </g>
-        </svg>
-      </div>
-    </div><!-- end scene-zoom -->
-
-    <!-- HUD overlay -->
-    <div id="hud">
-      <div class="rot-line rot-h" id="rl1"></div>
-      <div class="rot-line rot-h" id="rl2"></div>
-      <div class="rot-line rot-v" id="rv1"></div>
-      <div class="rot-line rot-v" id="rv2"></div>
-      <canvas id="conv-canvas"></canvas>
+<body class="scanning-grid selection:bg-emerald-500 selection:text-black">
+<!-- TopNavBar Shell -->
+<header class="fixed top-0 w-full border-b border-emerald-900/60 bg-[#050C0A]/90 backdrop-blur-xl flex justify-between items-center px-8 py-4 z-50 md:px-12">
+<div class="text-lg font-black tracking-tighter text-emerald-400">
+        ENV_ARCHITECT//OS
     </div>
+<nav class="hidden md:flex items-center space-x-8">
+<a class="technical-readout text-xs font-bold text-yellow-500 border-b border-yellow-500 pb-1 cursor-crosshair" href="#hero">HERO_SYSTEM</a>
+<a class="technical-readout text-xs font-bold text-emerald-600 hover:text-yellow-400 transition-all duration-150 cursor-crosshair" href="#grid">PROJECT_GRID</a>
+<a class="technical-readout text-xs font-bold text-emerald-600 hover:text-yellow-400 transition-all duration-150 cursor-crosshair" href="#expert">CORE_EXPERT</a>
+<a class="technical-readout text-xs font-bold text-emerald-600 hover:text-yellow-400 transition-all duration-150 cursor-crosshair" href="#uplink">UPLINK_01</a>
+</nav>
+<div class="flex items-center space-x-4">
+<span class="material-symbols-outlined text-emerald-500 cursor-crosshair">settings_input_component</span>
+<span class="material-symbols-outlined text-emerald-500 cursor-crosshair">terminal</span>
+</div>
+</header>
+<main class="relative">
+<!-- Hero Section -->
+<section class="relative h-screen flex items-center justify-center overflow-hidden" id="hero">
+<div class="absolute inset-0 z-0">
+<img class="w-full h-full object-cover opacity-40 grayscale-[0.5]" data-alt="Cinematic wide shot of a sprawling futuristic cyberpunk city with neon lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD5gi_U5aN9-hjvr188FDtC1I22-DK07g-5j9W-d6bO_ROpaDoR0d3G3dV8eR3roSAYRElO_2NbKsmbJQssnLsOeSskfUqS4bFXh3euvrdvAcDTfwbyR9bQkV9Sk8obBr40LkEXBCV7Z5v5y-zb7A0bD3lXvaflWxDcgltrtOKzipJ6CV2ueh_vTXPcYrgLnguzI-DnQbz6wfNpeB8PNYGquj3C6JaTrBAs-qTUqzjxk2AtODH5wIdiKwEveGHzV7WWGyjWlFk0HSM"/>
+<div class="absolute inset-0 bg-gradient-to-t from-[#050C0A] via-[#050C0A]/40 to-transparent"></div>
+</div>
+<!-- HUD Overlay -->
+<div class="relative z-10 w-full max-w-7xl mx-6 border border-emerald-500/30 bg-[#0D1F1A]/60 backdrop-blur-md p-12">
+<div class="hud-bracket-tl"></div>
+<div class="hud-bracket-tr"></div>
+<div class="hud-bracket-bl"></div>
+<div class="hud-bracket-br"></div>
+<div class="flex flex-col space-y-6">
+<div class="flex flex-wrap items-center gap-4">
+<div class="h-[1px] w-12 bg-yellow-500"></div>
+<span class="technical-readout text-[10px] text-yellow-500 font-bold">SYSTEM_BOOT: SUCCESSFUL</span>
+<span class="technical-readout text-[10px] text-emerald-500/70">STYLES: RETRO · STYLIZED · SEMI-REALISM · PIXEL ART</span>
+<div class="flex items-center space-x-4 ml-auto border-l border-emerald-900/40 pl-6">
+<!-- Discord Avatar -->
+<div class="relative flex-shrink-0">
+<div class="w-10 h-10 rounded-full border-2 border-[#5865F2]/50 p-0.5" id="discord-avatar-ring">
+<div class="w-full h-full rounded-full bg-[#0D1F1A] flex items-center justify-center overflow-hidden" id="discord-avatar-wrapper">
+<svg id="discord-default-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-5 h-5 fill-[#5865F2]/70"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+<img id="discord-avatar-img" class="w-full h-full object-cover hidden rounded-full" src="" alt="Discord Avatar"/>
+</div>
+</div>
+<div class="absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-[#0D1F1A] animate-pulse discord-status-offline" id="discord-status-dot"></div>
+</div>
+<!-- Discord Info -->
+<div class="flex flex-col justify-center min-w-0">
+<div class="flex items-center space-x-2">
+<span class="technical-readout text-[10px] text-[#5865F2] font-bold truncate max-w-[130px]" id="discord-username">WHITEGHOST</span>
+<span class="w-1 h-1 bg-emerald-900/40 rounded-full"></span>
+<div class="technical-readout text-[9px] text-emerald-600 flex items-center space-x-1">
+<span>LOCAL_TIME:</span>
+<span class="text-yellow-500 font-bold tabular-nums" id="ist-clock">00:00:00</span>
+</div>
+</div>
+<div class="flex items-center space-x-2 mt-0.5">
+<span class="technical-readout text-[10px] font-bold" id="discord-status-text">CONNECTING...</span>
+</div>
+<div id="discord-activity-bar" class="flex items-center space-x-1 mt-0.5" style="opacity:0;transition:opacity 0.4s ease">
+<span class="material-symbols-outlined text-yellow-500 text-[13px]" id="discord-activity-icon">deployed_code</span>
+<span class="technical-readout text-[9px] text-emerald-500/60 tracking-wider truncate max-w-[180px]" id="discord-activity-text">—</span>
+</div>
+<button id="discord-copy-btn" onclick="copyDiscordTag()" class="mt-1 self-start technical-readout text-[8px] text-[#5865F2]/60 hover:text-[#5865F2] border border-[#5865F2]/20 hover:border-[#5865F2]/60 px-1.5 py-0.5 transition-all duration-200 active:scale-95" style="display:none">
+COPY_TAG
+</button>
+</div>
+</div>
+</div>
+<h1 class="font-black text-6xl md:text-7xl text-emerald-400 leading-none uppercase max-w-4xl tracking-tighter">
+                    WHITEGHOST // <span class="text-yellow-500 glow-gold">GAME_DEV</span> &amp; 3D_ARTIST
+                </h1>
+<p class="text-lg text-emerald-100/60 max-w-2xl font-light">6 years of experience specializing in Environmental &amp; Level Design, GFX (thumbnails, logos), and interior/map design.</p>
+<div class="pt-8">
+<button class="px-8 py-3 border border-yellow-500 text-yellow-500 technical-readout text-xs hover:bg-yellow-500 hover:text-black transition-all duration-300 flex items-center space-x-3 group active:scale-95 font-bold">
+<span>STATUS: OPEN TO PROJECTS :D</span>
+<span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Secondary HUD elements -->
+<div class="absolute bottom-4 right-8 flex flex-col items-end space-y-1 technical-readout text-[9px] text-emerald-700/80">
+<div>TOOLS: BLENDER · SUBSTANCE PAINTER · ROBLOX STUDIO</div>
+<div>POLY_WORK: LOW &amp; MID POLY</div>
+</div>
+</div>
+</section>
+<!-- Project Grid Section -->
+<section class="py-24 px-8 max-w-7xl mx-auto" id="grid">
+<div class="flex items-center justify-between mb-16">
+<div>
+<h2 class="text-4xl font-black text-emerald-400 uppercase tracking-tighter">PROJECT_GRID</h2>
+<div class="h-1 w-24 bg-yellow-500 mt-2"></div>
+</div>
+<div class="text-right">
+<span class="technical-readout text-xs text-emerald-600" id="grid-count">TOTAL_ENTRIES: 06</span>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="project-grid">
+<!-- Cards injected by JS -->
+</div>
+</section>
+<!-- About & Expertise Section -->
+<section class="py-24 bg-[#081310] border-y border-emerald-900/30" id="expert">
+<div class="max-w-7xl mx-auto px-8 grid grid-cols-1 lg:grid-cols-2 gap-20">
+<div class="space-y-8">
+<h2 class="text-4xl font-black text-emerald-400 uppercase tracking-tighter">CORE_EXPERT</h2>
+<div class="p-6 border-l-2 border-yellow-500 bg-[#0D1F1A]">
+<p class="text-emerald-100/70 leading-relaxed">
+Environmental artist focused on level design, map layout, and the systems that make spaces feel alive - from geometry and flow to custom shaders and material work. I build environments that aren't just pretty, they function. Clean structure, intentional design, every detail placed with purpose.
+</p>
+</div>
+<!-- Tool cards -->
+<div class="grid grid-cols-2 gap-4 technical-readout text-[11px]">
+<div class="border border-emerald-900/40 p-4 bg-[#050C0A] group hover:border-yellow-500/40 transition-colors duration-300">
+<div class="flex items-center space-x-2 mb-2">
+<span class="material-symbols-outlined text-yellow-500 text-[16px]">deployed_code</span>
+<div class="text-yellow-500 font-bold">01_ROBLOX_STUDIO</div>
+</div>
+<div class="text-emerald-500/50">Level building, map scripting and in-engine optimization.</div>
+</div>
+<div class="border border-emerald-900/40 p-4 bg-[#050C0A] group hover:border-yellow-500/40 transition-colors duration-300">
+<div class="flex items-center space-x-2 mb-2">
+<span class="material-symbols-outlined text-yellow-500 text-[16px]">view_in_ar</span>
+<div class="text-yellow-500 font-bold">02_BLENDER</div>
+</div>
+<div class="text-emerald-500/50">3D modeling, sculpting, and asset pipeline creation.</div>
+</div>
+<div class="border border-emerald-900/40 p-4 bg-[#050C0A] group hover:border-yellow-500/40 transition-colors duration-300">
+<div class="flex items-center space-x-2 mb-2">
+<span class="material-symbols-outlined text-yellow-500 text-[16px]">texture</span>
+<div class="text-yellow-500 font-bold">03_SUBSTANCE_PAINTER</div>
+</div>
+<div class="text-emerald-500/50">PBR texturing, surface detail and material layering.</div>
+</div>
+<div class="border border-emerald-900/40 p-4 bg-[#050C0A] group hover:border-yellow-500/40 transition-colors duration-300">
+<div class="flex items-center space-x-2 mb-2">
+<span class="material-symbols-outlined text-yellow-500 text-[16px]">terminal</span>
+<div class="text-yellow-500 font-bold">04_VS_CODE</div>
+</div>
+<div class="text-emerald-500/50">Shader code, Lua scripting and workflow automation.</div>
+</div>
+</div>
+</div>
+<!-- Capability bars -->
+<div class="bg-[#050C0A] border border-emerald-900/40 p-8 relative">
+<div class="flex items-center justify-between mb-8">
+<span class="technical-readout text-xs text-yellow-500 font-bold">SYSTEM_CAPABILITIES</span>
+<span class="material-symbols-outlined text-emerald-500">analytics</span>
+</div>
+<div class="space-y-6">
+<div class="space-y-2">
+<div class="flex justify-between technical-readout text-[10px]">
+<span class="text-emerald-300 font-bold">LEVEL_DESIGN // MAP_ARCHITECTURE</span>
+<span class="text-emerald-500">Proficient</span>
+</div>
+<div class="h-1 bg-emerald-900/20 w-full">
+<div class="h-full bg-emerald-500 w-[80%] shadow-[0_0_8px_rgba(16,185,129,0.5)]"></div>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between technical-readout text-[10px]">
+<span class="text-emerald-300 font-bold">3D_MODELING // BLENDER_PIPELINE</span>
+<span class="text-emerald-500">Proficient</span>
+</div>
+<div class="h-1 bg-emerald-900/20 w-full">
+<div class="h-full bg-emerald-500 w-[90%] shadow-[0_0_8px_rgba(16,185,129,0.5)]"></div>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between technical-readout text-[10px]">
+<span class="text-emerald-300 font-bold">PBR_TEXTURING // SUBSTANCE</span>
+<span class="text-emerald-500">Intermediate</span>
+</div>
+<div class="h-1 bg-emerald-900/20 w-full">
+<div class="h-full bg-emerald-500 w-[60%] shadow-[0_0_8px_rgba(16,185,129,0.5)]"></div>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between technical-readout text-[10px]">
+<span class="text-emerald-300 font-bold">SHADER_WRITING // CUSTOM_FX</span>
+<span class="text-emerald-500">Intermediate</span>
+</div>
+<div class="h-1 bg-emerald-900/20 w-full">
+<div class="h-full bg-yellow-500 w-[50%] shadow-[0_0_8px_rgba(251,191,36,0.5)]"></div>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between technical-readout text-[10px]">
+<span class="text-emerald-300 font-bold">LUA_SCRIPTING // ROBLOX_ENGINE</span>
+<span class="text-emerald-500">Rookie</span>
+</div>
+<div class="h-1 bg-emerald-900/20 w-full">
+<div class="h-full bg-yellow-500 w-[30%] shadow-[0_0_8px_rgba(251,191,36,0.5)]"></div>
+</div>
+</div>
+</div>
+<div class="mt-8 pt-8 border-t border-emerald-900/30 technical-readout text-[10px] text-emerald-800 font-bold">
+STATUS: ACTIVE_ARCHITECT_MODE // READY_FOR_DEPLOYMENT
+</div>
+</div>
+</div>
+</section>
+<!-- Contact Section -->
+<section class="py-24 max-w-4xl mx-auto px-8 text-center" id="uplink">
+<h2 class="text-4xl font-black text-emerald-400 uppercase mb-4 tracking-tighter">UPLINK_01</h2>
+<p class="text-emerald-100/60 mb-12">Establish a secure connection for project inquiries or technical collaborations.</p>
+<div class="border border-emerald-900/40 p-1 bg-emerald-500/5">
+<div class="border border-emerald-900/40 p-8 space-y-6 bg-[#0D1F1A]/40">
+<form id="uplink-form" action="https://formspree.io/f/mpqkobgk" method="POST" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="text-left space-y-2">
+<label class="technical-readout text-[10px] text-emerald-600 font-bold">INPUT_IDENTIFIER</label>
+<input name="name" required class="w-full bg-[#050C0A] border-emerald-900/60 focus:border-yellow-500 focus:ring-0 text-emerald-100 technical-readout text-xs placeholder:text-emerald-900/60" placeholder="NAME / ORGANIZATION" type="text"/>
+</div>
+<div class="text-left space-y-2">
+<label class="technical-readout text-[10px] text-emerald-600 font-bold">RETURN_ADDRESS</label>
+<input name="email" required class="w-full bg-[#050C0A] border-emerald-900/60 focus:border-yellow-500 focus:ring-0 text-emerald-100 technical-readout text-xs placeholder:text-emerald-900/60" placeholder="EMAIL_ENCRYPTED" type="email"/>
+</div>
+<div class="text-left space-y-2 md:col-span-2">
+<label class="technical-readout text-[10px] text-emerald-600 font-bold">TRANSMISSION_DATA</label>
+<textarea name="message" required class="w-full bg-[#050C0A] border-emerald-900/60 focus:border-yellow-500 focus:ring-0 text-emerald-100 technical-readout text-xs placeholder:text-emerald-900/60" placeholder="DESCRIBE_OBJECTIVES..." rows="4"></textarea>
+</div>
+<div class="md:col-span-2 pt-4">
+<button id="uplink-btn" class="w-full py-4 bg-yellow-500 text-black technical-readout text-sm hover:bg-yellow-400 transition-colors tracking-[0.4em] font-black uppercase" type="submit">
+INITIATE_UPLINK
+</button>
+</div>
+</form>
+<!-- Success state (hidden until form submits) -->
+<div id="uplink-success" class="hidden text-center py-8 space-y-3">
+<span class="material-symbols-outlined text-emerald-400 text-4xl">check_circle</span>
+<p class="technical-readout text-sm text-emerald-400 font-bold">TRANSMISSION_SENT // UPLINK_ESTABLISHED</p>
+<p class="technical-readout text-[10px] text-emerald-600">Message received. Standing by for response.</p>
+</div>
+</div>
+</div>
+<div class="mt-16 flex justify-center space-x-12">
+<a class="group flex flex-col items-center space-y-2" href="https://www.roblox.com/users/2581145337/profile" target="_blank" rel="noopener">
+<span class="material-symbols-outlined text-emerald-500 group-hover:text-yellow-500 transition-colors">link</span>
+<span class="technical-readout text-[9px] text-emerald-800 group-hover:text-emerald-400">Roblox</span>
+</a>
+<a class="group flex flex-col items-center space-y-2" href="https://create.roblox.com/talent/creators/2581145337" target="_blank" rel="noopener">
+<span class="material-symbols-outlined text-emerald-500 group-hover:text-yellow-500 transition-colors">link</span>
+<span class="technical-readout text-[9px] text-emerald-800 group-hover:text-emerald-400">Creator Page</span>
+</a>
+<a class="group flex flex-col items-center space-y-2" href="https://www.instagram.com/justwhiteghost" target="_blank" rel="noopener">
+<span class="material-symbols-outlined text-emerald-500 group-hover:text-yellow-500 transition-colors">photo_camera</span>
+<span class="technical-readout text-[9px] text-emerald-800 group-hover:text-emerald-400">INSTAGRAM</span>
+</a>
+<a class="group flex flex-col items-center space-y-2" href="https://discord.com/users/784753134789853207" target="_blank" rel="noopener">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-6 h-6 fill-emerald-500 group-hover:fill-[#5865F2] transition-colors duration-200"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+<span class="technical-readout text-[9px] text-emerald-800 group-hover:text-[#5865F2]">DISCORD</span>
+</a>
+</div>
+</section>
+</main>
 
-    <canvas id="particle-canvas"></canvas>
-  </div><!-- end #hero -->
-
-</div><!-- end #site -->
-
-<script src="nav.js"></script>
+<!-- ══ PROJECT DETAIL OVERLAY ══════════════════════════════════════════════ -->
+<div id="project-detail" class="fixed inset-0 z-[100] bg-[#050C0A] overflow-y-auto scanning-grid" style="display:none;opacity:0;transition:opacity 0.3s ease">
+<!-- Back button bar -->
+<div class="sticky top-0 z-10 border-b border-emerald-900/40 bg-[#050C0A]/95 backdrop-blur-xl px-8 py-4 flex items-center justify-between">
+<button onclick="closeProject()" class="flex items-center space-x-3 technical-readout text-xs text-emerald-500 hover:text-yellow-500 transition-colors group">
+<span class="material-symbols-outlined text-[18px] group-hover:-translate-x-1 transition-transform duration-200">arrow_back</span>
+<span>BACK_TO_GRID</span>
+</button>
+<span class="technical-readout text-[10px] text-emerald-800" id="detail-id-label">ID: PRJ-000</span>
+</div>
+<!-- Detail content -->
+<div class="max-w-5xl mx-auto px-8 py-16 space-y-12">
+<!-- Hero image -->
+<div class="relative border border-emerald-900/40 overflow-hidden">
+<div class="hud-bracket-tl"></div><div class="hud-bracket-tr"></div>
+<div class="hud-bracket-bl"></div><div class="hud-bracket-br"></div>
+<img id="detail-hero" src="" alt="" class="w-full max-h-[480px] object-cover opacity-90"/>
+</div>
+<!-- Title + tags -->
+<div class="space-y-4">
+<div class="flex flex-wrap items-start justify-between gap-4">
+<h1 id="detail-title" class="font-black text-4xl md:text-5xl text-emerald-400 uppercase tracking-tighter"></h1>
+<div class="flex flex-wrap gap-2" id="detail-tags"></div>
+</div>
+<!-- Description -->
+<p id="detail-desc" class="text-emerald-100/70 leading-relaxed text-lg max-w-3xl"></p>
+</div>
+<!-- Stats grid -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="detail-stats"></div>
+<!-- Extra images gallery -->
+<div id="detail-gallery" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+<!-- Notes / breakdown -->
+<div id="detail-notes-wrap" class="border-l-2 border-yellow-500 bg-[#0D1F1A] p-6 hidden">
+<p class="technical-readout text-[10px] text-yellow-500 font-bold mb-3">TECHNICAL_NOTES</p>
+<p id="detail-notes" class="text-emerald-100/60 leading-relaxed text-sm"></p>
+</div>
+</div>
+</div>
+<footer class="w-full border-t border-emerald-900/40 bg-black flex flex-col md:flex-row justify-between items-center px-12 py-10">
+<div class="technical-readout text-[10px] text-emerald-900 mb-4 md:mb-0">
+        ©2024 ENV_ART_CORE // LAT:42.00_LONG:12.44 // ALL_SYSTEMS_GO
+    </div>
+</footer>
+<!-- Decorative HUD Elements -->
+<div class="fixed top-8 left-8 w-12 h-12 border-t-2 border-l-2 border-emerald-500/10 pointer-events-none z-[-1]"></div>
+<div class="fixed top-8 right-8 w-12 h-12 border-t-2 border-r-2 border-emerald-500/10 pointer-events-none z-[-1]"></div>
+<div class="fixed bottom-8 left-8 w-12 h-12 border-b-2 border-l-2 border-emerald-500/10 pointer-events-none z-[-1]"></div>
+<div class="fixed bottom-8 right-8 w-12 h-12 border-b-2 border-r-2 border-emerald-500/10 pointer-events-none z-[-1]"></div>
 <script>
-const W=()=>window.innerWidth, H=()=>window.innerHeight;
-let mx=W()/2, my=H()/2;
+// ══════════════════════════════════════════════════════════════════════════════
+//  PROJECT DATA — edit this array to add / remove / update projects
+//  Each object supports:
+//    id         : string  — shown as "ID: PRJ-XXX"
+//    title      : string  — project name (shown in caps)
+//    thumb      : string  — thumbnail image URL
+//    tags       : array   — tag objects { label, color: 'green'|'yellow' }
+//    summary    : string  — short blurb on the card (max ~120 chars)
+//    desc       : string  — full description on the detail page
+//    stats      : array   — stat objects { label, value } (up to 4)
+//    gallery    : array   — extra image URLs for the detail page (optional)
+//    notes      : string  — technical notes section (optional, leave '' to hide)
+// ══════════════════════════════════════════════════════════════════════════════
+const PROJECTS = [
+{
+  id: 'PRJ-052',
+  title: 'VICTORIAN_MANOR',
+  thumb: './Projects/Victorian Manor/1.png',
+  tags: [
+    { label: 'ROBLOX_STUDIO',      color: 'blue'  },
+    { label: 'PBR_WORKFLOW',       color: 'green' },
+    { label: 'POLY_COUNT: ~30K',   color: 'yellow' }
+  ],
+  summary: 'Stylized Victorian interior environment with PBR materials and atmosphere-driven lighting, optimized for Roblox.',
+  desc: 'A Victorian-inspired manor environment built in Roblox Studio, with custom assets modeled in Blender and textured in Substance Painter. The scene focuses on mood, composition, and lighting to create a cinematic feel despite engine limitations. Due to Roblox constraints, lighting is largely faked and textures are limited to 1K resolution, requiring careful balancing between visual quality and performance. Emphasis was placed on warm interior tones, soft depth of field, and storytelling through environment design.',
+  stats: [
+    { label: 'ENGINE',     value: 'Roblox Studio' },
+    { label: 'POLY_COUNT', value: '~30K'          },
+    { label: 'TEXTURES',   value: 'PBR 1K'        },
+    { label: 'LIGHTING',   value: 'Baked/Faked'   }
+  ],
+  gallery: [
+    './Projects/Victorian Manor/2.png',
+    './Projects/Victorian Manor/3.png',
+    './Projects/Victorian Manor/4.png',
+    './Projects/Victorian Manor/5.png',
+    './Projects/Victorian Manor/6.png'
+  ],
+  notes: 'Assets were created in Blender with a focus on clean topology and efficient poly usage. Materials were authored in Substance Painter using a PBR workflow, then optimized for Roblox’s 1K texture limitations. Lighting relies on manual setup, color grading, and post-processing tricks (bloom, depth of field) to simulate global illumination and achieve a cinematic look within engine constraints.'
+},
+  {
+  id: 'PRJ-053',
+  title: 'CARNIVAL_CLEARING',
+  thumb: './Projects/Carnival Clearing/1 Gen.png',
+  tags: [
+    { label: 'ROBLOX_STUDIO',    color: 'blue'   },
+    { label: 'LOW_POLY',         color: 'green'  },
+    { label: 'GRADIENT TEXTURING',     color: 'purple' },
+    { label: 'POLY_COUNT: ~5K', color: 'yellow' }
+  ],
+  summary: 'Stylized low-poly carnival environment with strong color contrast and atmosphere-driven lighting.',
+  desc: 'A stylized carnival scene built in Roblox Studio using custom low-poly assets created in Blender and textured in Substance Painter. The environment focuses on readability, color harmony, and mood, using a combination of warm torch lighting and cool ambient moonlight to create contrast. Due to Roblox limitations, lighting is largely faked and textures are limited to 1K resolution, requiring optimization while maintaining visual appeal. The scene is designed to feel inviting yet slightly eerie, supported by composition and controlled lighting.',
+  stats: [
+    { label: 'ENGINE',     value: 'Roblox Studio' },
+    { label: 'POLY_COUNT', value: '~30K'          },
+    { label: 'TEXTURES',   value: 'PBR 1K'        },
+    { label: 'LIGHTING',   value: 'Faked/Hybrid'  }
+  ],
+  gallery: [
+    './Projects/Carnival Clearing/1.png',
+    './Projects/Carnival Clearing/2.png',
+    './Projects/Carnival Clearing/3.png',
+    './Projects/Carnival Clearing/4.png',
+    './Projects/Carnival Clearing/5.png',
+    './Projects/Carnival Clearing/6.png'
+  ],
+  notes: 'Assets were modeled in Blender with a low-poly approach to maintain performance while preserving silhouette clarity. Materials were authored in Substance Painter using a simplified PBR workflow adapted for Roblox. Lighting relies heavily on manual placement of warm point lights (torches, tent glow) contrasted with cool ambient lighting to simulate nighttime global illumination. Scene composition uses radial pathways to guide player movement toward the central tent and focal points like the ferris wheel.'
+},
+  {
+  id: 'PRJ-054',
+  title: 'VISUAL_EXPLORATIONS',
+  thumb: './Projects/Visual Explorations/4.png',
+  tags: [
+    { label: 'BLENDER',            color: 'orange' },
+    { label: 'HIGH_POLY',          color: 'red'    },
+    { label: 'RENDER_STUDIES',     color: 'purple' },
+    { label: 'POST_PROCESS',       color: 'blue'   }
+  ],
+  summary: 'A collection of high-poly cinematic renders exploring lighting, composition, and mood.',
+  desc: 'A series of independent render studies created in Blender and refined in Photoshop, focusing on cinematic lighting, atmosphere, and visual storytelling. These scenes range from stylized environments to character-focused compositions, each experimenting with different moods such as eerie, calm, and dramatic. Unlike real-time projects, these renders prioritize visual fidelity over optimization, with poly counts ranging from 100K to over 1 million. Post-processing plays a significant role in enhancing depth, color grading, and overall presentation.',
+  stats: [
+    { label: 'SOFTWARE',   value: 'Blender + Photoshop' },
+    { label: 'POLY_COUNT', value: '100K - 1M+'          },
+    { label: 'TEXTURES',   value: 'PBR (2K–4K)'         },
+    { label: 'LIGHTING',   value: 'Ray-traced / Baked'  }
+  ],
+  gallery: [
+    './Projects/Visual Explorations/1.png',
+    './Projects/Visual Explorations/3.png',
+    './Projects/Visual Explorations/4.png',
+    './Projects/Visual Explorations/5.png',
+    './Projects/Visual Explorations/6.png',
+    './Projects/Visual Explorations/7.png',
+    './Projects/Visual Explorations/8.png',
+    './Projects/Visual Explorations/9.webp',
+    './Projects/Visual Explorations/10.webp',
+    './Projects/Visual Explorations/11.webp'
+  ],
+  notes: 'These renders emphasize lighting as the primary storytelling tool, using strong contrast between warm and cool tones, volumetric fog, and depth of field to guide focus. Scenes were intentionally built with high geometric complexity to avoid reliance on normal maps for silhouette detail. Photoshop was used for final color grading, bloom control, and subtle chromatic aberration to enhance cinematic quality.'
+},
+{
+  id: 'PRJ-055',
+  title: '3D_TO_2D_PIPELINE',
+  thumb: './Projects/3D to 2D/1.png',
+  tags: [
+    { label: 'BLENDER',        color: 'orange' },
+    { label: 'STYLIZED',       color: 'green'  },
+    { label: 'RENDER_TO_2D',   color: 'blue'   },
+    { label: 'POST_PROCESS',   color: 'purple' }
+  ],
+  summary: 'A stylized workflow converting 3D scenes into 2D illustration-style renders.',
+  desc: 'A Halloween-themed stylized artwork created using a hybrid pipeline where a 3D scene is used as the base for a final 2D illustration. The process begins with blocking and composition in Blender, followed by lighting and grayscale rendering to establish values. The render is then refined in Photoshop with color, line emphasis, and stylistic adjustments to achieve a hand-drawn look while retaining 3D accuracy.\n\nThis approach allows for consistent perspective, lighting control, and faster iteration compared to fully manual illustration workflows.',
+  stats: [
+    { label: 'BASE',        value: '3D (Blender)'     },
+    { label: 'OUTPUT',      value: '2D Illustration'  },
+    { label: 'TEXTURES',    value: 'Stylized/Painted' },
+    { label: 'PIPELINE',    value: 'Render → Paintover' }
+  ],
+  gallery: [
+    './Projects/3D to 2D/4.png',
+    './Projects/3D to 2D/2.png',
+    './Projects/3D to 2D/3.png',
+    './Projects/3D to 2D/1.png',
+  ],
+  notes: 'Workflow emphasizes value hierarchy before color. A grayscale render is used to lock in lighting and depth, followed by paintover for color and stylization. Edges are selectively sharpened or softened to mimic hand-drawn linework. Final composition relies on exaggeration of shapes and contrast to maintain readability in a 2D format.'
+},
+  {
+  id: 'PRJ-???',
+  title: 'UNKNOWN_ENTRY',
+  thumb: './Projects/Unknown/1.png',
+  tags: [
+    { label: 'ACCESS_DENIED',  color: 'red'    },
+    { label: 'CORRUPTED_DATA', color: 'orange' },
+    { label: 'UNRELEASED',     color: 'purple' }
+  ],
+  summary: '[DATA_FRAGMENT] Partial records recovered. Project status: unstable.',
+  desc: '"…you weren’t supposed to see this yet."\n\n> Attempting to retrieve project metadata...\n> ████% complete\n> Integrity check failed.\n\nFragments suggest a hybrid system involving mechanical augmentation, modular interfaces, and industrial-grade components. Several assets appear over-engineered beyond real-time constraints, implying either cinematic intent or restricted deployment.\n\n"it’s not ready."\n\nSome files reference internal testing environments and non-public builds. Others are deliberately obfuscated.\n\n> Warning: unauthorized access logged.\n\n"announcement pending."',
+  stats: [
+    { label: 'ENGINE',     value: '???'        },
+    { label: 'POLY_COUNT', value: '???'        },
+    { label: 'TEXTURES',   value: '???'        },
+    { label: 'STATUS',     value: 'LOCKED'     }
+  ],
+  gallery: [
+    './Projects/Unknown/2.png',
+    './Projects/Unknown/3.png',
+    './Projects/Unknown/4.png',
+    './Projects/Unknown/5.png',
+    './Projects/Unknown/6.png'
+  ],
+  notes: '> Log_01: "prototype behaving outside expected parameters."\n> Log_02: "visual fidelity prioritized over deployment constraints."\n> Log_██: "…if this leaks, we accelerate the reveal."\n\n[END OF RECOVERED DATA]'
+}
+];
+// ══════════════════════════════════════════════════════════════════════════════
 
-/* ── SKY ── */
-const skyCanvas=document.getElementById('sky-canvas');
-const skyCtx=skyCanvas.getContext('2d');
-function resizeSky(){skyCanvas.width=W();skyCanvas.height=H();}
-resizeSky();
-function getSkyColors(){
-  const h=new Date().getHours();
-  if(h>=5&&h<7)  return['#1a1208','#2a1e0a','#1a2a10'];
-  if(h>=7&&h<10) return['#1a200a','#162010','#0e1a0c'];
-  if(h>=10&&h<17)return['#0c1a0e','#081408','#050e06'];
-  if(h>=17&&h<19)return['#1a1206','#1e1a08','#0e1a0c'];
-  if(h>=19&&h<21)return['#120e06','#1a1008','#0a1408'];
-  return['#050a05','#080e08','#050a06'];
+// ── Build project grid ────────────────────────────────────────────────────────
+function buildGrid() {
+    const grid = document.getElementById('project-grid');
+    document.getElementById('grid-count').textContent = `TOTAL_ENTRIES: ${String(PROJECTS.length).padStart(2,'0')}`;
+    grid.innerHTML = PROJECTS.map((p, i) => `
+        <div onclick="openProject(${i})"
+             class="group relative border border-emerald-900/60 bg-[#0D1F1A]/40 overflow-hidden hover:border-yellow-500 transition-colors duration-500 cursor-pointer">
+            <div class="aspect-video overflow-hidden border-b border-emerald-900/60">
+                <img class="w-full h-full object-cover opacity-80 transition-transform duration-700 group-hover:scale-110 group-hover:opacity-100" src="${p.thumb}" alt="${p.title}"/>
+            </div>
+            <div class="p-6 space-y-3">
+                <div class="flex justify-between items-start">
+                    <h3 class="font-bold text-lg text-emerald-300 group-hover:text-yellow-500 transition-colors">${p.title}</h3>
+                    <span class="technical-readout text-[9px] text-emerald-700">ID: ${p.id}</span>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    ${p.tags.map(t => `<span class="bg-[#050C0A] px-2 py-1 technical-readout text-[9px] ${t.color==='yellow'?'text-yellow-500/80':'text-emerald-500'} border border-emerald-900/60">${t.label}</span>`).join('')}
+                </div>
+                <p class="text-sm text-emerald-100/40 line-clamp-2">${p.summary}</p>
+                <div class="flex items-center space-x-1 pt-1 technical-readout text-[9px] text-emerald-700 group-hover:text-yellow-500/60 transition-colors">
+                    <span class="material-symbols-outlined text-[13px]">open_in_full</span>
+                    <span>VIEW_PROJECT</span>
+                </div>
+            </div>
+        </div>
+    `).join('');
 }
-function drawSky(){
-  const[top,mid,bot]=getSkyColors();
-  const g=skyCtx.createLinearGradient(0,0,0,H());
-  g.addColorStop(0,top);g.addColorStop(0.5,mid);g.addColorStop(1,bot);
-  skyCtx.fillStyle=g;skyCtx.fillRect(0,0,W(),H());
-  skyCtx.fillStyle='rgba(180,200,160,0.35)';
-  for(let i=0;i<80;i++){
-    const sx=(i*137.5)%W(),sy=(i*97.3)%(H()*0.55),sz=Math.random()<0.2?1.5:0.8;
-    skyCtx.beginPath();skyCtx.arc(sx,sy,sz,0,Math.PI*2);skyCtx.fill();
-  }
-}
-drawSky();
 
-/* ── CONVERGENCE LINES ── */
-const convCanvas=document.getElementById('conv-canvas');
-const convCtx=convCanvas.getContext('2d');
-function resizeConv(){convCanvas.width=W();convCanvas.height=H();}
-resizeConv();
-function drawConvLines(){
-  convCtx.clearRect(0,0,W(),H());
-  convCtx.setLineDash([4,7]);
-  convCtx.strokeStyle='rgba(196,146,26,0.15)';convCtx.lineWidth=0.8;
-  const bx=W()*0.5,by=H()*0.33;
-  convCtx.beginPath();convCtx.moveTo(0,H());convCtx.lineTo(bx-60,by+30);convCtx.stroke();
-  convCtx.beginPath();convCtx.moveTo(W(),H());convCtx.lineTo(bx+60,by+30);convCtx.stroke();
-  convCtx.setLineDash([3,5]);
-  convCtx.strokeStyle='rgba(46,94,30,0.25)';convCtx.lineWidth=0.7;
-  convCtx.beginPath();convCtx.moveTo(0,H()*0.88);convCtx.quadraticCurveTo(W()*0.15,H()*0.76,W()*0.38,H()*0.65);convCtx.stroke();
-  convCtx.beginPath();convCtx.moveTo(W(),H()*0.88);convCtx.quadraticCurveTo(W()*0.85,H()*0.76,W()*0.62,H()*0.65);convCtx.stroke();
-}
-drawConvLines();
+// ── Project detail open / close ───────────────────────────────────────────────
+function openProject(index) {
+    const p   = PROJECTS[index];
+    const overlay = document.getElementById('project-detail');
 
-/* ── PARALLAX ── */
-const layers=document.querySelectorAll('.p-layer[data-depth]');
-document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
-function applyParallax(){
-  const dx=(mx/W()-0.5)*2,dy=(my/H()-0.5)*2;
-  layers.forEach(l=>{
-    const d=parseFloat(l.dataset.depth)||0;
-    l.style.transform=`translate(${dx*d*-220}px,${dy*d*-80}px)`;
-  });
-  requestAnimationFrame(applyParallax);
-}
-applyParallax();
+    document.getElementById('detail-id-label').textContent = `ID: ${p.id}`;
+    document.getElementById('detail-title').textContent    = p.title;
+    document.getElementById('detail-hero').src             = p.thumb;
+    document.getElementById('detail-hero').alt             = p.title;
+    document.getElementById('detail-desc').textContent     = p.desc;
 
-/* ── PARTICLES ── */
-const pCanvas=document.getElementById('particle-canvas');
-const pCtx=pCanvas.getContext('2d');
-function resizeP(){pCanvas.width=W();pCanvas.height=H();}
-resizeP();
-const wind=Array.from({length:25},()=>({x:Math.random(),y:Math.random(),vx:0.0004+Math.random()*0.0008,vy:(Math.random()-0.5)*0.0002,phase:Math.random()*Math.PI*2,a:0.08+Math.random()*0.14,r:0.6+Math.random()*0.9}));
-const leaves=[];
-const LEAF_COLORS=['#2a5a18','#245014','#224c16','#7a5a20','#6a4e1a','#3a6018'];
-function spawnLeaves(cx,cy,count=4){
-  for(let i=0;i<count;i++){
-    const ang=(Math.random()-0.5)*Math.PI,spd=1.5+Math.random()*2.5;
-    leaves.push({x:cx+(Math.random()-0.5)*60,y:cy+(Math.random()-0.5)*40,vx:Math.cos(ang)*spd,vy:-Math.random()*2-1,rot:Math.random()*Math.PI*2,rotV:(Math.random()-0.5)*0.18,life:1,decay:0.006+Math.random()*0.006,w:8+Math.random()*10,h:5+Math.random()*6,color:LEAF_COLORS[Math.floor(Math.random()*LEAF_COLORS.length)]});
-  }
-}
-const foliageZones=document.querySelectorAll('.foliage-zone');
-let lastLeafSpawn=0;
-function checkFoliageProx(t){
-  if(t-lastLeafSpawn<400)return;
-  foliageZones.forEach(z=>{
-    const cx=parseFloat(z.dataset.cx)*W()/1600,cy=parseFloat(z.dataset.cy)*H()/900;
-    if(Math.hypot(mx-cx,my-cy)<140){spawnLeaves(cx,cy,3);lastLeafSpawn=t;}
-  });
-}
-function drawParticles(t){
-  pCtx.clearRect(0,0,W(),H());
-  wind.forEach(w=>{
-    w.x+=w.vx;w.y+=w.vy+Math.sin(t*0.0004+w.phase)*0.0001;
-    if(w.x>1.05)w.x=-0.05;if(w.y<0)w.y=1;if(w.y>1)w.y=0;
-    pCtx.beginPath();pCtx.arc(w.x*W(),w.y*H(),w.r,0,Math.PI*2);
-    pCtx.fillStyle=`rgba(180,210,160,${w.a})`;pCtx.fill();
-  });
-  for(let i=leaves.length-1;i>=0;i--){
-    const l=leaves[i];l.x+=l.vx;l.y+=l.vy;l.vy+=0.05;l.vx*=0.99;l.rot+=l.rotV;l.life-=l.decay;
-    if(l.life<=0){leaves.splice(i,1);continue;}
-    pCtx.save();pCtx.translate(l.x,l.y);pCtx.rotate(l.rot);pCtx.globalAlpha=l.life;
-    pCtx.fillStyle=l.color;pCtx.beginPath();pCtx.ellipse(0,0,l.w/2,l.h/2,0,0,Math.PI*2);pCtx.fill();
-    pCtx.strokeStyle='rgba(0,0,0,0.2)';pCtx.lineWidth=0.5;pCtx.beginPath();pCtx.moveTo(-l.w/2,0);pCtx.lineTo(l.w/2,0);pCtx.stroke();
-    pCtx.restore();
-  }
-}
-function loop(t){checkFoliageProx(t);drawParticles(t);requestAnimationFrame(loop);}
-requestAnimationFrame(loop);
+    // Tags
+    document.getElementById('detail-tags').innerHTML = p.tags.map(t =>
+        `<span class="bg-[#050C0A] px-3 py-1 technical-readout text-[10px] ${t.color==='yellow'?'text-yellow-500/80':'text-emerald-500'} border border-emerald-900/60">${t.label}</span>`
+    ).join('');
 
-window.addEventListener('resize',()=>{resizeSky();resizeConv();resizeP();drawSky();drawConvLines();});
+    // Stats
+    document.getElementById('detail-stats').innerHTML = p.stats.map(s => `
+        <div class="border border-emerald-900/40 bg-[#050C0A] p-4 text-center">
+            <div class="technical-readout text-[9px] text-emerald-700 mb-1">${s.label}</div>
+            <div class="technical-readout text-sm text-yellow-500 font-bold">${s.value}</div>
+        </div>
+    `).join('');
+
+    // Gallery
+    const galleryEl = document.getElementById('detail-gallery');
+    if (p.gallery && p.gallery.length > 0) {
+        galleryEl.innerHTML = p.gallery.map(src =>
+            `<div class="border border-emerald-900/40 overflow-hidden"><img src="${src}" class="w-full h-48 object-cover opacity-80 hover:opacity-100 transition-opacity"/></div>`
+        ).join('');
+        galleryEl.style.display = '';
+    } else {
+        galleryEl.innerHTML = '';
+        galleryEl.style.display = 'none';
+    }
+
+    // Notes
+    const notesWrap = document.getElementById('detail-notes-wrap');
+    if (p.notes) {
+        document.getElementById('detail-notes').textContent = p.notes;
+        notesWrap.classList.remove('hidden');
+    } else {
+        notesWrap.classList.add('hidden');
+    }
+
+    // Show overlay
+    overlay.style.display = 'block';
+    overlay.scrollTop = 0;
+    document.body.style.overflow = 'hidden';
+    requestAnimationFrame(() => { overlay.style.opacity = '1'; });
+}
+
+function closeProject() {
+    const overlay = document.getElementById('project-detail');
+    overlay.style.opacity = '0';
+    document.body.style.overflow = '';
+    setTimeout(() => { overlay.style.display = 'none'; }, 300);
+}
+
+// Close on Escape key
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeProject(); });
+
+// ── IST Clock ─────────────────────────────────────────────────────────────────
+function updateISTClock() {
+    const now = new Date();
+    const options = { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+    const istTime = new Intl.DateTimeFormat('en-GB', options).format(now);
+    const clockEl = document.getElementById('ist-clock');
+    if (clockEl) clockEl.textContent = istTime;
+}
+setInterval(updateISTClock, 1000);
+updateISTClock();
+
+// ── Uplink form (Formspree) ────────────────────────────────────────────────────
+const uplinkForm = document.getElementById('uplink-form');
+if (uplinkForm) {
+    uplinkForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const btn = document.getElementById('uplink-btn');
+        btn.textContent = 'TRANSMITTING...';
+        btn.disabled = true;
+
+        try {
+            const res = await fetch(uplinkForm.action, {
+                method: 'POST',
+                body: new FormData(uplinkForm),
+                headers: { 'Accept': 'application/json' }
+            });
+            if (res.ok) {
+                uplinkForm.style.display = 'none';
+                document.getElementById('uplink-success').classList.remove('hidden');
+            } else {
+                btn.textContent = 'ERROR — RETRY_UPLINK';
+                btn.disabled = false;
+            }
+        } catch {
+            btn.textContent = 'ERROR — RETRY_UPLINK';
+            btn.disabled = false;
+        }
+    });
+}
+const DISCORD_USER_ID = '784753134789853207';
+
+const STATUS_MAP = {
+    online:  { label: 'ONLINE  // ACTIVE',  cls: 'discord-status-online',   textColor: '#10B981' },
+    idle:    { label: 'IDLE    // AWAY',    cls: 'discord-status-idle',     textColor: '#FAA61A' },
+    dnd:     { label: 'DND     // BUSY',    cls: 'discord-status-dnd',      textColor: '#ED4245' },
+    offline: { label: 'OFFLINE // STANDBY', cls: 'discord-status-offline',  textColor: '#747F8D' }
+};
+
+const ACTIVITY_ICON_MAP = {
+    'Blender':       'deployed_code', 'Visual Studio': 'terminal',
+    'VS Code':       'terminal',      'Roblox Studio': 'deployed_code',
+    'Unreal Engine': 'deployed_code', 'Unity':         'deployed_code',
+    'Spotify':       'music_note',    'Crunchyroll':   'play_circle',
+    'Netflix':       'play_circle',   'YouTube':       'play_circle',
+    'Twitch':        'live_tv',       'Prime Video':   'play_circle',
+    'default':       'joystick'
+};
+
+const TYPE_PREFIX = { 0: 'Playing', 1: 'Streaming', 2: 'Listening to', 3: 'Watching', 5: 'Competing in' };
+
+let discordTag = '';
+
+function applyStatus(status) {
+    const dot  = document.getElementById('discord-status-dot');
+    const text = document.getElementById('discord-status-text');
+    const info = STATUS_MAP[status] || STATUS_MAP.offline;
+    dot.classList.remove('discord-status-online','discord-status-idle','discord-status-dnd','discord-status-offline');
+    dot.classList.add(info.cls);
+    text.textContent = info.label;
+    text.style.color = info.textColor;
+}
+
+function applyActivity(activities) {
+    const bar    = document.getElementById('discord-activity-bar');
+    const iconEl = document.getElementById('discord-activity-icon');
+    const textEl = document.getElementById('discord-activity-text');
+    if (!activities || !activities.length) { bar.style.opacity = '0'; return; }
+    const PRIORITY = [3, 0, 1, 2, 5];
+    let act = null;
+    for (const t of PRIORITY) { act = activities.find(a => a.type === t); if (act) break; }
+    if (!act) { bar.style.opacity = '0'; return; }
+    const iconKey = Object.keys(ACTIVITY_ICON_MAP).find(k => act.name && act.name.includes(k)) || 'default';
+    iconEl.textContent = ACTIVITY_ICON_MAP[iconKey];
+    const prefix = TYPE_PREFIX[act.type] ? `${TYPE_PREFIX[act.type]}: ` : '';
+    let label = act.type === 3 && act.details ? act.details
+              : act.type === 2 ? (act.details ? `${act.details}${act.state ? ' — '+act.state : ''}` : act.name)
+              : act.name + (act.details ? ` // ${act.details}` : '');
+    textEl.textContent = (prefix + label).slice(0, 42);
+    bar.style.opacity = '1';
+}
+
+function applyAvatar(userId, avatarHash) {
+    const img = document.getElementById('discord-avatar-img');
+    const def = document.getElementById('discord-default-icon');
+    if (avatarHash) {
+        const ext = avatarHash.startsWith('a_') ? 'gif' : 'webp';
+        img.src   = `https://cdn.discordapp.com/avatars/${userId}/${avatarHash}.${ext}?size=128`;
+        img.onload = () => { img.classList.remove('hidden'); def.classList.add('hidden'); };
+    }
+}
+
+async function fetchDiscordPresence() {
+    if (DISCORD_USER_ID === 'YOUR_DISCORD_USER_ID') {
+        document.getElementById('discord-username').textContent = 'WHITEGHOST';
+        applyStatus('online');
+        document.getElementById('discord-activity-bar').style.opacity = '1';
+        document.getElementById('discord-activity-icon').textContent  = 'deployed_code';
+        document.getElementById('discord-activity-text').textContent  = 'Blender v4.0';
+        return;
+    }
+    try {
+        const res  = await fetch(`https://api.lanyard.rest/v1/users/${DISCORD_USER_ID}`);
+        const json = await res.json();
+        if (!json.success) throw new Error('Lanyard error');
+        const d = json.data;
+        discordTag = d.discord_user.username;
+        document.getElementById('discord-username').textContent = (d.discord_user.global_name || d.discord_user.username).toUpperCase();
+        applyAvatar(d.discord_user.id, d.discord_user.avatar);
+        applyStatus(d.discord_status);
+        applyActivity(d.activities);
+        document.getElementById('discord-copy-btn').style.display = 'inline-block';
+    } catch(err) {
+        console.warn('Discord presence unavailable:', err);
+        applyStatus('offline');
+    }
+}
+
+function copyDiscordTag() {
+    const tag = discordTag || 'WHITEGHOST';
+    navigator.clipboard.writeText(tag).then(() => {
+        const btn = document.getElementById('discord-copy-btn');
+        const prev = btn.textContent;
+        btn.textContent = 'COPIED ✓';
+        btn.style.color = '#10B981';
+        setTimeout(() => { btn.textContent = prev; btn.style.color = ''; }, 1800);
+    });
+}
+
+// ── Init ─────────────────────────────────────────────────────────────────────
+buildGrid();
+fetchDiscordPresence();
+setInterval(fetchDiscordPresence, 30000);
 </script>
-</body>
-</html>
+</body></html>
